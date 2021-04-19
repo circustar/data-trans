@@ -4,16 +4,14 @@ import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.circustar.data_trans.service.impl.*;
 import com.circustar.data_trans.sql.executor.DataTransExecutorManager;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 
-@AutoConfigureAfter({MybatisPlusAutoConfiguration.class})
 @Configuration
-@MapperScan("com.circustar.data_transfer.mapper")
+@MapperScan("com.circustar.data_trans.mapper")
 public class DataTransConfiguration {
     private DataSource dataSource;
     private DataTransExecutorManager dataTransExecutorManager;

@@ -26,7 +26,7 @@ public class JoinStatement implements ISQLBuilder {
         if(containSubSql) {
             jointTableString = "(" + jointTableString + ")";
         }
-        String result = joinType + " " + jointTableString + " " + joinTableAlias;
+        String result = " " + joinType + " " + jointTableString + " " + joinTableAlias;
         if(!StringUtils.isEmpty(onStatement)) {
             result +=  " ON " + onStatement;
         }

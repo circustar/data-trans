@@ -4,17 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class WhereStatement implements ISQLBuilder {
-    private AndOrType andOrType = AndOrType.NONE;
+    private LogicType logicType = LogicType.EMPTY;
 
     private String sqlWhere;
-
-    private WhereStatement subWhereStatement;
 
     private WhereStatement nextWhereStatement;
 
@@ -26,37 +25,36 @@ public class WhereStatement implements ISQLBuilder {
         this.sqlWhere = sqlWhereBuilder.getSql();
     }
 
-    public void addNextWhereStatement(WhereStatement nextWhereStatement,AndOrType andOrType) {
-        this.nextWhereStatement = nextWhereStatement;
-        this.nextWhereStatement.setAndOrType(andOrType);
-    }
-
-    public void addSubWhereStatement(WhereStatement subWhereStatement,AndOrType andOrType) {
-        this.nextWhereStatement = nextWhereStatement;
-        this.nextWhereStatement.setAndOrType(andOrType);
+    public void addNextWhereStatement(WhereStatement nextWhereStatement, LogicType logicType) {
+        WhereStatement lastWhereStatement = this;
+        while(lastWhereStatement.nextWhereStatement != null) {
+            lastWhereStatement = lastWhereStatement.nextWhereStatement;
+        }
+        lastWhereStatement.nextWhereStatement = nextWhereStatement;
+        nextWhereStatement.setLogicType(logicType);
     }
 
     @Override
     public String getSql() {
         String result = sqlWhere;
-        if(subWhereStatement != null) {
-            result = result + subWhereStatement.andOrType.getLogicType() + " ("
-                    + subWhereStatement.getSql() + ")";
-        }
         if(nextWhereStatement != null) {
-            result = result + nextWhereStatement.andOrType.getLogicType() + subWhereStatement.getSql() ;
+            result = result + (StringUtils.isEmpty(result)?"" : nextWhereStatement.logicType.getLogicType())
+                    + "(" + nextWhereStatement.getSql() + ")" ;
         }
         return result;
     }
 
-    public enum AndOrType{
+    public enum LogicType {
         AND(" and "),
+        AND_NOT(" and not "),
         OR(" or "),
-        NONE("");
+        OR_NOT(" or not "),
+        NOT(" not "),
+        EMPTY("");
 
         private String logicType;
 
-        AndOrType(String logicType) {
+        LogicType(String logicType) {
             this.logicType = logicType;
         }
 

@@ -25,7 +25,7 @@ public interface IDataTransExecutorBuilder {
                 topStatement = whereStatement;
             } else {
                 nextWhereStatement = new WhereStatement(dataTransSource.getWhereStatement());
-                whereStatement.addNextWhereStatement(nextWhereStatement, WhereStatement.AndOrType.AND);
+                whereStatement.addNextWhereStatement(nextWhereStatement, WhereStatement.LogicType.AND);
                 whereStatement = nextWhereStatement;
             }
         }
@@ -44,18 +44,20 @@ public interface IDataTransExecutorBuilder {
 
     default ISQLBuilder createSelectSQLBuilder(List<DataTransSource> dataTransSources
             , List<DataTransColumn> dataTransColumns, boolean withColumnAlias) {
-        List<DataTransSource> sortedSourceList = dataTransSources.stream().sorted(Comparator.comparingInt(DataTransSource::getGroupIndex)).collect(Collectors.toList());
+        List<DataTransSource> sortedSourceList = dataTransSources.stream().sorted(Comparator.comparing(DataTransSource::getDataTransSourceId)).collect(Collectors.toList());
         SelectSQLBuilder.SelectSQLBuilderBuilder selectSQLBuilderBuilder = SelectSQLBuilder.builder();
         selectSQLBuilderBuilder.mainTable(new StringStatement(sortedSourceList.get(0).getSourceTable()));
         selectSQLBuilderBuilder.selectColumns(dataTransColumns.stream()
-                .map(x -> x.getColumnValue() + (withColumnAlias?x.getColumnName():""))
+                .map(x -> x.getColumnValue() + " " + (withColumnAlias?x.getColumnName():""))
                 .collect(Collectors.toList()));
         List<JoinStatement> joinStatementList = createJoinStatements(dataTransSources);
 
         WhereStatement whereStatement = createWhereStatement(dataTransSources);
         selectSQLBuilderBuilder.mainTableAlias(sortedSourceList.get(0).getAlias())
                 .joinStatementList(joinStatementList)
-                .whereStatement(whereStatement);
+                .whereStatement(whereStatement)
+                .groupColumns(dataTransColumns.stream().filter(x -> x.getGroupFlag()== Constant.CONST_YES)
+                        .map(x -> x.getColumnValue()).collect(Collectors.toList()));
         return selectSQLBuilderBuilder.build();
     }
 
@@ -153,7 +155,7 @@ public interface IDataTransExecutorBuilder {
     }
     default BaseSqlExecutor createUpdateJoinExecutor(DataTrans dataTrans, List<DataTransSource> dataTransSources, List<DataTransColumn> dataTransColumns) {
         Map<String, String> columnNameValueMap = dataTransColumns.stream().collect(Collectors.toMap(DataTransColumn::getColumnName, DataTransColumn::getColumnValue));
-        List<DataTransSource> sortedSourceList = dataTransSources.stream().sorted(Comparator.comparingInt(DataTransSource::getGroupIndex)).collect(Collectors.toList());
+        List<DataTransSource> sortedSourceList = dataTransSources.stream().sorted(Comparator.comparing(DataTransSource::getDataTransSourceId)).collect(Collectors.toList());
         List<JoinStatement> joinStatementList = createJoinStatements(sortedSourceList);
         WhereStatement whereStatement = createWhereStatement(dataTransSources);
         String sql = UpdateJoinSQLBuilder.builder().updateTable(dataTrans.getTableName())

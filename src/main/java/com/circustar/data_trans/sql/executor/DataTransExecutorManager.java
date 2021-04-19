@@ -104,7 +104,7 @@ public class DataTransExecutorManager {
             dataTransExec.setMessage("");
         } catch (Exception ex) {
             dataTransExec.setExecuteError(1);
-            dataTransExec.setMessage(ex.getMessage().substring(0, 1000));
+            dataTransExec.setMessage(ex.getMessage().length() > 1000?ex.getMessage().substring(0, 1000) : ex.getMessage());
         }
         dataTransExec.setExecuted(1);
         dataTransExec.setExecuteTime(new Date());

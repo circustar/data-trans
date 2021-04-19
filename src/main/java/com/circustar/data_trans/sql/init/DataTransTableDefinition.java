@@ -175,11 +175,6 @@ public class DataTransTableDefinition {
                 .columnName("WHERE_STATEMENT")
                 .columnType(getDataType(dbName,"varchar", "1000"))
                 .build());
-        result.add(DataTransColumn.builder()
-                .dataTransId(DATA_TRANS_ID_SOURCE)
-                .columnName("GROUP_ORDER")
-                .columnType(getDataType(dbName,"int", "10"))
-                .build());
         return result;
     }
 

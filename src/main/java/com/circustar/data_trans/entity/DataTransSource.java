@@ -27,6 +27,4 @@ public class DataTransSource implements Serializable {
     private String onStatement;
 
     private String whereStatement;
-
-    private Integer groupIndex;
 }
