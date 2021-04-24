@@ -15,13 +15,12 @@ import java.util.stream.Collectors;
 @Builder(toBuilder = true)
 public class UpdateExistSQLBuilder implements ISQLBuilder {
     private String updateTable;
-    private String updateTableAlias;
     private List<String> updateColumnList = new ArrayList<>();
     private ISQLBuilder selectSQLBuilder;
     private ISQLBuilder existSQLBuilder;
 
     public String getSql() {
-        String updateSql = "UPDATE " + updateTable + " " + updateTableAlias + " SET "
+        String updateSql = "UPDATE " + updateTable + " SET "
                 + updateColumnList.stream().collect(Collectors.joining(",", "(", ")"))
                 + " = (" + selectSQLBuilder.getSql() + ")"
                 + " where exists(" + existSQLBuilder.getSql() + ")";

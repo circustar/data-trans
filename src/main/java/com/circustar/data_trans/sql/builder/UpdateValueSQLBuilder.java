@@ -14,12 +14,11 @@ import java.util.stream.Collectors;
 @Builder(toBuilder = true)
 public class UpdateValueSQLBuilder implements ISQLBuilder {
     private String updateTable;
-    private String updateTableAlias;
     private Map<String, String> columnNameValueMap;
     private WhereStatement whereStatement;
 
     public String getSql() {
-        String updateSql = "UPDATE " + updateTable + " " + updateTableAlias + " SET "
+        String updateSql = "UPDATE " + updateTable  + " SET "
         + columnNameValueMap.entrySet().stream().map(x -> x.getKey() + " = " + x.getValue()).collect(Collectors.joining(","))
                 + " where " + whereStatement.getSql();
 

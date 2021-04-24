@@ -161,7 +161,6 @@ public interface IDataTransExecutorBuilder {
         Map<String, String> columnNameValueMap = dataTransColumns.stream().collect(Collectors.toMap(DataTransColumn::getColumnName, DataTransColumn::getColumnValue));
         WhereStatement whereStatement = createWhereStatement(dataTransSources);
         String sql = UpdateValueSQLBuilder.builder().updateTable(dataTrans.getTableName())
-                .updateTableAlias(dataTrans.getTableName())
                 .columnNameValueMap(columnNameValueMap)
                 .whereStatement(whereStatement)
                 .build().getSql();
@@ -175,7 +174,6 @@ public interface IDataTransExecutorBuilder {
         ISQLBuilder existSQLBuilder = createSelectSQLBuilder(dataTransSources
                 , Collections.singletonList(DataTransColumn.builder().columnValue("*").build()), false);
         String sql = UpdateExistSQLBuilder.builder().updateTable(dataTrans.getTableName())
-                .updateTableAlias(dataTrans.getTableName())
                 .updateColumnList(columnNameList)
                 .selectSQLBuilder(selectSQLBuilder)
                 .existSQLBuilder(existSQLBuilder)
@@ -191,7 +189,6 @@ public interface IDataTransExecutorBuilder {
         WhereStatement onStatement = createOnStatement(dataTransSources);
         whereStatement.addNextWhereStatement(onStatement, WhereStatement.LogicType.AND);
         String sql = UpdateJoinSQLBuilder.builder().updateTable(dataTrans.getTableName())
-                .updateTableAlias(dataTrans.getTableName())
                 .whereStatement(whereStatement)
                 .columnNameValueMap(columnNameValueMap)
                 .joinStatements(joinStatementList)

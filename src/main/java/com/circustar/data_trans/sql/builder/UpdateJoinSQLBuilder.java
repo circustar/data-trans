@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @Builder(toBuilder = true)
 public class UpdateJoinSQLBuilder implements ISQLBuilder {
     private String updateTable;
-    private String updateTableAlias;
     private List<JoinStatement> joinStatements;
     private Map<String, String> columnNameValueMap;
     private WhereStatement whereStatement;
@@ -30,8 +29,8 @@ public class UpdateJoinSQLBuilder implements ISQLBuilder {
                     .filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(""));
         }
 
-        String updateSql = "UPDATE " + updateTable + " " + updateTableAlias + joinString  + " SET "
-                + columnNameValueMap.entrySet().stream().map(x -> updateTableAlias + "." + x.getKey() + " = " + x.getValue())
+        String updateSql = "UPDATE " + updateTable + " " + joinString  + " SET "
+                + columnNameValueMap.entrySet().stream().map(x -> updateTable + "." + x.getKey() + " = " + x.getValue())
                 .collect(Collectors.joining(","))
                 + " where " + whereStatement.getSql();
 
