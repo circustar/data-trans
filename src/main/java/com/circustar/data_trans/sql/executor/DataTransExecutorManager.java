@@ -7,6 +7,7 @@ import com.circustar.data_trans.sql.init.DataTransInitExecutorBuilder;
 import com.circustar.data_trans.sql.init.DataTransTableDefinition;
 import com.circustar.common_utils.executor.BaseListExecutor;
 import com.circustar.common_utils.executor.IExecutor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class DataTransExecutorManager {
     private DataSource dataSource;
 
@@ -103,6 +105,7 @@ public class DataTransExecutorManager {
             dataTransExec.setExecuteError(0);
             dataTransExec.setMessage("");
         } catch (Exception ex) {
+            log.error(ex.getMessage());
             dataTransExec.setExecuteError(1);
             dataTransExec.setMessage(ex.getMessage().length() > 1000?ex.getMessage().substring(0, 1000) : ex.getMessage());
         }

@@ -26,6 +26,9 @@ public class WhereStatement implements ISQLBuilder {
     }
 
     public void addNextWhereStatement(WhereStatement nextWhereStatement, LogicType logicType) {
+        if(nextWhereStatement == null) {
+            return;
+        }
         WhereStatement lastWhereStatement = this;
         while(lastWhereStatement.nextWhereStatement != null) {
             lastWhereStatement = lastWhereStatement.nextWhereStatement;

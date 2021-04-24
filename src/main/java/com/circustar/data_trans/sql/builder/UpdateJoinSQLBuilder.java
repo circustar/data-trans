@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,11 +25,13 @@ public class UpdateJoinSQLBuilder implements ISQLBuilder {
     public String getSql() {
         String joinString = "";
         if(joinStatements != null) {
-            joinString = joinStatements.stream().map(x -> x.getSql()).collect(Collectors.joining(" "));
+            joinString = joinStatements.stream()
+                    .map(x -> x.getSql())
+                    .filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(""));
         }
 
-        String updateSql = "UPDATE " + updateTable + " " + joinString + updateTableAlias + " SET "
-                + columnNameValueMap.entrySet().stream().map(x -> x.getKey() + " = " + x.getValue())
+        String updateSql = "UPDATE " + updateTable + " " + updateTableAlias + joinString  + " SET "
+                + columnNameValueMap.entrySet().stream().map(x -> updateTableAlias + "." + x.getKey() + " = " + x.getValue())
                 .collect(Collectors.joining(","))
                 + " where " + whereStatement.getSql();
 

@@ -76,12 +76,12 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_GROUP)
                 .columnName(COLUMN_NAME_DATA_TRANS_GROUP_NAME)
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,"varchar", "30"))
                 .primaryKey(1).build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_GROUP)
                 .columnName("REMARK")
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,"varchar", "200"))
                 .build());
         return result;
     }
@@ -91,7 +91,7 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName(COLUMN_NAME_DATA_TRANS_ID)
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,"varchar", "30"))
                 .primaryKey(1).build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
@@ -132,7 +132,7 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName("REMARK")
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,"varchar", "200"))
                 .build());
         return result;
     }
@@ -158,7 +158,7 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_SOURCE)
                 .columnName("ALIAS")
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,"varchar", "30"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_SOURCE)
@@ -173,7 +173,7 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_SOURCE)
                 .columnName("WHERE_STATEMENT")
-                .columnType(getDataType(dbName,"varchar", "1000"))
+                .columnType(getDataType(dbName,"varchar", "2000"))
                 .build());
         return result;
     }
@@ -199,7 +199,7 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_COLUMN)
                 .columnName("COLUMN_TYPE")
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,"varchar", "30"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_COLUMN)
@@ -261,7 +261,7 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC)
                 .columnName("MESSAGE")
-                .columnType(getDataType(dbName,"varchar", "1000"))
+                .columnType(getDataType(dbName,"varchar", "1500"))
                 .build());
         return result;
     }
@@ -281,7 +281,7 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_PARAM)
                 .columnName("PARAM_NAME")
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,"varchar", "50"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_PARAM)

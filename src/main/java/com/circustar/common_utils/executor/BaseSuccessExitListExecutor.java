@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class BaseSuccessExitListExecutor<T> extends BaseListExecutor<T> implements ISuccessExitListExecutor<T> {
 
@@ -23,7 +24,7 @@ public class BaseSuccessExitListExecutor<T> extends BaseListExecutor<T> implemen
     }
 
     public BaseSuccessExitListExecutor(IExecutor<T>... executors) {
-        super(Arrays.asList(executors));
+        super(Arrays.stream(executors).collect(Collectors.toList()));
     }
 
     @Override

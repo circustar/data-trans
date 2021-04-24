@@ -12,13 +12,13 @@ public enum UpdateType {
 
     public static UpdateType parseUpdateType(String name) {
         String strName = name.toLowerCase();
-        if(UpdateType.DELETE.name.equals(strName)) {
+        if(UpdateType.DELETE.name.equalsIgnoreCase(strName)) {
             return UpdateType.DELETE;
         }
-        if(UpdateType.INSERT.name.equals(strName)) {
+        if(UpdateType.INSERT.name.equalsIgnoreCase(strName)) {
             return UpdateType.INSERT;
         }
-        if(UpdateType.UPDATE.name.equals(strName)) {
+        if(UpdateType.UPDATE.name.equalsIgnoreCase(strName)) {
             return UpdateType.UPDATE;
         }
         return null;

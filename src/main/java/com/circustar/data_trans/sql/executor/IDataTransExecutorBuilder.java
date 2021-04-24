@@ -32,13 +32,41 @@ public interface IDataTransExecutorBuilder {
         return topStatement;
     }
 
+    default WhereStatement createOnStatement(List<DataTransSource> dataTransSources) {
+        WhereStatement topStatement = null;
+        WhereStatement whereStatement = null;
+        WhereStatement nextWhereStatement ;
+        for(DataTransSource dataTransSource : dataTransSources) {
+            if(StringUtils.isEmpty(dataTransSource.getOnStatement())) {
+                continue;
+            }
+            if(whereStatement == null) {
+                whereStatement = new WhereStatement(dataTransSource.getOnStatement());
+                topStatement = whereStatement;
+            } else {
+                nextWhereStatement = new WhereStatement(dataTransSource.getOnStatement());
+                whereStatement.addNextWhereStatement(nextWhereStatement, WhereStatement.LogicType.AND);
+                whereStatement = nextWhereStatement;
+            }
+        }
+        return topStatement;
+    }
+
     default List<JoinStatement> createJoinStatements(List<DataTransSource> sortedDataTransSources) {
         List<JoinStatement> result = sortedDataTransSources.stream().filter(x -> !StringUtils.isEmpty(x.getJoinType()))
                 .map(x -> JoinStatement.builder()
                         .selectSQLBuilder(new StringStatement(x.getSourceTable()))
-                        .joinTableAlias(x.getAlias())
+                        .joinTableAlias(StringUtils.isEmpty(x.getAlias()) ? x.getSourceTable() : x.getAlias())
                         .joinType(x.getJoinType())
                         .onStatement(x.getOnStatement()).build()).collect(Collectors.toList());
+        return result;
+    }
+
+    default List<JoinStatement> createCommaJoinStatements(List<DataTransSource> sortedDataTransSources) {
+        List<JoinStatement> result = sortedDataTransSources.stream().map(x -> JoinStatement.builder()
+                        .selectSQLBuilder(new StringStatement(x.getSourceTable()))
+                        .joinTableAlias(StringUtils.isEmpty(x.getAlias()) ? x.getSourceTable() : x.getAlias())
+                        .joinType(",").build()).collect(Collectors.toList());
         return result;
     }
 
@@ -133,6 +161,7 @@ public interface IDataTransExecutorBuilder {
         Map<String, String> columnNameValueMap = dataTransColumns.stream().collect(Collectors.toMap(DataTransColumn::getColumnName, DataTransColumn::getColumnValue));
         WhereStatement whereStatement = createWhereStatement(dataTransSources);
         String sql = UpdateValueSQLBuilder.builder().updateTable(dataTrans.getTableName())
+                .updateTableAlias(dataTrans.getTableName())
                 .columnNameValueMap(columnNameValueMap)
                 .whereStatement(whereStatement)
                 .build().getSql();
@@ -146,6 +175,7 @@ public interface IDataTransExecutorBuilder {
         ISQLBuilder existSQLBuilder = createSelectSQLBuilder(dataTransSources
                 , Collections.singletonList(DataTransColumn.builder().columnValue("*").build()), false);
         String sql = UpdateExistSQLBuilder.builder().updateTable(dataTrans.getTableName())
+                .updateTableAlias(dataTrans.getTableName())
                 .updateColumnList(columnNameList)
                 .selectSQLBuilder(selectSQLBuilder)
                 .existSQLBuilder(existSQLBuilder)
@@ -156,9 +186,12 @@ public interface IDataTransExecutorBuilder {
     default BaseSqlExecutor createUpdateJoinExecutor(DataTrans dataTrans, List<DataTransSource> dataTransSources, List<DataTransColumn> dataTransColumns) {
         Map<String, String> columnNameValueMap = dataTransColumns.stream().collect(Collectors.toMap(DataTransColumn::getColumnName, DataTransColumn::getColumnValue));
         List<DataTransSource> sortedSourceList = dataTransSources.stream().sorted(Comparator.comparing(DataTransSource::getDataTransSourceId)).collect(Collectors.toList());
-        List<JoinStatement> joinStatementList = createJoinStatements(sortedSourceList);
+        List<JoinStatement> joinStatementList = createCommaJoinStatements(sortedSourceList);
         WhereStatement whereStatement = createWhereStatement(dataTransSources);
+        WhereStatement onStatement = createOnStatement(dataTransSources);
+        whereStatement.addNextWhereStatement(onStatement, WhereStatement.LogicType.AND);
         String sql = UpdateJoinSQLBuilder.builder().updateTable(dataTrans.getTableName())
+                .updateTableAlias(dataTrans.getTableName())
                 .whereStatement(whereStatement)
                 .columnNameValueMap(columnNameValueMap)
                 .joinStatements(joinStatementList)

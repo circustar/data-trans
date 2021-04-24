@@ -3,6 +3,7 @@ package com.circustar.common_utils.executor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BaseListExecutor<T> extends AbstractExecutor<T> implements IListExecutor<T> {
 
@@ -19,7 +20,7 @@ public class BaseListExecutor<T> extends AbstractExecutor<T> implements IListExe
     }
 
     public BaseListExecutor(IExecutor<T>... executors) {
-        this(Arrays.asList(executors));
+        this(Arrays.stream(executors).collect(Collectors.toList()));
     }
 
     @Override
