@@ -3,7 +3,7 @@ package com.circustar.data_trans.sql.init;
 import com.circustar.data_trans.entity.DataTrans;
 import com.circustar.data_trans.entity.DataTransGroup;
 import com.circustar.data_trans.sql.executor.IDataTransExecutorBuilder;
-import com.circustar.util.executor.*;
+import com.circustar.common_utils.executor.*;
 
 import java.util.*;
 

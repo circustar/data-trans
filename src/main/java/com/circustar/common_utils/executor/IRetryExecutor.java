@@ -1,4 +1,4 @@
-package com.circustar.util.executor;
+package com.circustar.common_utils.executor;
 
 import java.util.function.BiConsumer;
 

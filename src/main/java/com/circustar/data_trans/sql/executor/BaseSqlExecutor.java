@@ -1,8 +1,8 @@
 package com.circustar.data_trans.sql.executor;
 
-import com.circustar.util.SPELParser;
-import com.circustar.util.executor.AbstractExecutor;
-import com.circustar.util.executor.IExecutor;
+import com.circustar.common_utils.parser.SPELParser;
+import com.circustar.common_utils.executor.AbstractExecutor;
+import com.circustar.common_utils.executor.IExecutor;
 
 import java.sql.Connection;
 import java.sql.SQLException;

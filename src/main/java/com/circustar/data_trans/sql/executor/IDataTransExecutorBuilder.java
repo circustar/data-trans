@@ -5,7 +5,7 @@ import com.circustar.data_trans.entity.DataTrans;
 import com.circustar.data_trans.entity.DataTransColumn;
 import com.circustar.data_trans.entity.DataTransSource;
 import com.circustar.data_trans.sql.builder.*;
-import com.circustar.util.executor.*;
+import com.circustar.common_utils.executor.*;
 import org.springframework.util.StringUtils;
 
 import java.util.*;

@@ -5,8 +5,8 @@ import com.circustar.data_trans.entity.*;
 import com.circustar.data_trans.service.impl.*;
 import com.circustar.data_trans.sql.init.DataTransInitExecutorBuilder;
 import com.circustar.data_trans.sql.init.DataTransTableDefinition;
-import com.circustar.util.executor.BaseListExecutor;
-import com.circustar.util.executor.IExecutor;
+import com.circustar.common_utils.executor.BaseListExecutor;
+import com.circustar.common_utils.executor.IExecutor;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

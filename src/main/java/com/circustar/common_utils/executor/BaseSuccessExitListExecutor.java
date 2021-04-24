@@ -1,9 +1,8 @@
-package com.circustar.util.executor;
+package com.circustar.common_utils.executor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -88,6 +87,7 @@ public class BaseSuccessExitListExecutor<T> extends BaseListExecutor<T> implemen
     public void execute(T param) throws Exception {
         List<IExecutor<T>> executors = getExecutors();
         List<IExecutor<T>> loopList = new ArrayList<>(executors);
+        Exception outException = null;
         for(IExecutor executor : loopList) {
             try {
                 executor.execute(param);
@@ -102,6 +102,9 @@ public class BaseSuccessExitListExecutor<T> extends BaseListExecutor<T> implemen
                     return;
                 }
             } catch (Exception ex) {
+                if(outException == null) {
+                    outException = ex;
+                }
                 BiConsumer<Exception, IExecutor<T>> errorConsumer = getErrorConsumer();
                 if(errorConsumer != null) {
                     errorConsumer.accept(ex, executor);
@@ -111,7 +114,7 @@ public class BaseSuccessExitListExecutor<T> extends BaseListExecutor<T> implemen
                 }
             }
         }
-        throw new Exception("no executor return ok");
+        throw outException;
     }
 
 }

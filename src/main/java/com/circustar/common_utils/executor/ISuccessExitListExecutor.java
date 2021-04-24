@@ -1,8 +1,5 @@
-package com.circustar.util.executor;
+package com.circustar.common_utils.executor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 

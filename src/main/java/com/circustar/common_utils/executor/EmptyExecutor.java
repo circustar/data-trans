@@ -1,6 +1,4 @@
-package com.circustar.util.executor;
-
-import java.util.Map;
+package com.circustar.common_utils.executor;
 
 public class EmptyExecutor<T> extends AbstractExecutor<T> {
 

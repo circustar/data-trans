@@ -1,4 +1,4 @@
-package com.circustar.util;
+package com.circustar.common_utils.parser;
 
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
