@@ -1,33 +1,40 @@
 package com.circustar.common_utils.executor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public abstract class AbstractExecutor<T> implements IExecutor<T> {
 
-    private Consumer<T> beforeExecuteConsumer;
-    private Consumer<T> afterExecuteConsumer;
+    private List<Consumer<T>> beforeExecuteConsumers;
+    private List<Consumer<T>> afterExecuteConsumers;
     private BiConsumer<T, Exception> errorConsumer;
 
-    @Override
-    public Consumer<T> getBeforeExecuteConsumer() {
-        return this.beforeExecuteConsumer;
+    public AbstractExecutor() {
+        this.beforeExecuteConsumers = new ArrayList<>();
+        this.afterExecuteConsumers = new ArrayList<>();
     }
 
     @Override
-    public IExecutor setBeforeExecuteConsumer(Consumer<T> beforeExecuteConsumer) {
-        this.beforeExecuteConsumer = beforeExecuteConsumer;
+    public List<Consumer<T>> getBeforeExecuteConsumers() {
+        return this.beforeExecuteConsumers;
+    }
+
+    @Override
+    public IExecutor setBeforeExecuteConsumers(List<Consumer<T>> beforeExecuteConsumers) {
+        this.beforeExecuteConsumers = beforeExecuteConsumers;
         return this;
     }
 
     @Override
-    public Consumer<T> getAfterExecuteConsumer() {
-        return this.afterExecuteConsumer;
+    public List<Consumer<T>> getAfterExecuteConsumers() {
+        return this.afterExecuteConsumers;
     }
 
     @Override
-    public IExecutor setAfterExecuteConsumer(Consumer<T> afterExecuteConsumer) {
-        this.afterExecuteConsumer = afterExecuteConsumer;
+    public IExecutor setAfterExecuteConsumers(List<Consumer<T>> afterExecuteConsumers) {
+        this.afterExecuteConsumers = afterExecuteConsumers;
         return this;
     }
 
@@ -41,6 +48,4 @@ public abstract class AbstractExecutor<T> implements IExecutor<T> {
         this.errorConsumer = executeErrorConsumer;
         return this;
     }
-
-
 }
