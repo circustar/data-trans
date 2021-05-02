@@ -1,8 +1,7 @@
 package com.circustar.data_trans.config;
 
-import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.circustar.data_trans.service.impl.*;
-import com.circustar.data_trans.sql.executor.DataTransExecutorManager;
+import com.circustar.data_trans.executor.DataTransExecutorManager;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
