@@ -34,7 +34,6 @@ public class BaseListExecutor<T> extends AbstractExecutor<T> implements IListExe
         return this;
     }
 
-
     @Override
     public List<IExecutor<T>> getExecutors() {
         return this.executors;

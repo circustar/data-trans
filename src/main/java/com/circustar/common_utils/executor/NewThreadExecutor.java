@@ -1,9 +1,9 @@
 package com.circustar.common_utils.executor;
 
-public class ParallelExecutor<T> extends AbstractExecutor<T>{
+public class NewThreadExecutor<T> extends AbstractExecutor<T>{
 
     protected IExecutor executor;
-    public ParallelExecutor(IExecutor executor) {
+    public NewThreadExecutor(IExecutor executor) {
         this.executor = executor;
     }
 
@@ -17,7 +17,4 @@ public class ParallelExecutor<T> extends AbstractExecutor<T>{
             }
         }).run();
     }
-
-
-
 }

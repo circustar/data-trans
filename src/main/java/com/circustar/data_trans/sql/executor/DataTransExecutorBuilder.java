@@ -25,14 +25,14 @@ public class DataTransExecutorBuilder implements IDataTransExecutorBuilder {
         IListExecutor<Map<String, Object>> listExecutor = new BaseListExecutor<>();
         //生成Drop
         if(dataTrans.getDropTableFlag() == Constant.CONST_YES) {
-            listExecutor.addExecutor(new BaseSuccessExitListExecutor(
+            listExecutor.addExecutor(new BaseParallelExecutor(
                     createDropTableExecutor(dataTrans)
                             , new EmptyExecutor<>())
             );
         }
         //生成Create
         if(dataTrans.getCreateTableFlag() == Constant.CONST_YES) {
-            listExecutor.addExecutor(new BaseSuccessExitListExecutor(
+            listExecutor.addExecutor(new BaseParallelExecutor(
                     createCreateTableExecutor(dataTrans, dataTransColumns)
                     , new EmptyExecutor<>()));
         }
@@ -45,7 +45,7 @@ public class DataTransExecutorBuilder implements IDataTransExecutorBuilder {
         if(UpdateType.DELETE.equals(updateType)) {
             //生成Delete
             listExecutor.addExecutor(
-                    new BaseSuccessExitListExecutor(
+                    new BaseParallelExecutor(
                             createDeleteValueExecutor(dataTrans, dataTransSources)
                             , createDeleteExistExecutor(dataTrans, dataTransSources)
             ).setPopElementOnSuccess(true));
@@ -53,7 +53,7 @@ public class DataTransExecutorBuilder implements IDataTransExecutorBuilder {
         if(UpdateType.INSERT.equals(updateType)) {
             //生成Insert
             listExecutor.addExecutor(
-                    new BaseSuccessExitListExecutor(
+                    new BaseParallelExecutor(
                             createInsertSelectExecutor(dataTrans, dataTransSources, dataTransColumns),
                             createInsertValueExecutor(dataTrans, dataTransColumns)
                     ).setPopElementOnSuccess(true));
@@ -61,7 +61,7 @@ public class DataTransExecutorBuilder implements IDataTransExecutorBuilder {
         if(UpdateType.UPDATE.equals(updateType)) {
             //生成Update
             listExecutor.addExecutor(
-                    new BaseSuccessExitListExecutor(
+                    new BaseParallelExecutor(
                             createUpdateValueExecutor(dataTrans, dataTransSources, dataTransColumns),
                             createUpdateExistExecutor(dataTrans, dataTransSources, dataTransColumns),
                             createUpdateJoinExecutor(dataTrans, dataTransSources, dataTransColumns)
@@ -73,7 +73,7 @@ public class DataTransExecutorBuilder implements IDataTransExecutorBuilder {
                 .filter(x -> x != null).collect(Collectors.toList());
         if(primaryKeyExecutors != null && primaryKeyExecutors.size() > 0) {
             listExecutor.addExecutor(
-                    new BaseSuccessExitListExecutor(
+                    new BaseParallelExecutor(
                             primaryKeyExecutors
                     ).setPopElementOnSuccess(true));
         }

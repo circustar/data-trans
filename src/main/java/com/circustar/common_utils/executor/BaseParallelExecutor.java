@@ -7,7 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class BaseSuccessExitListExecutor<T> extends BaseListExecutor<T> implements ISuccessExitListExecutor<T> {
+public class BaseParallelExecutor<T> extends BaseListExecutor<T> implements IParallelExecutor<T> {
 
     private boolean errorExit = false;
     private boolean successExit = true;
@@ -15,15 +15,15 @@ public class BaseSuccessExitListExecutor<T> extends BaseListExecutor<T> implemen
     private Consumer<IExecutor<T>> successConsumer;
     private boolean popElementOnSuccess = false;
 
-    public BaseSuccessExitListExecutor() {
+    public BaseParallelExecutor() {
         super();
     }
 
-    public BaseSuccessExitListExecutor(List<IExecutor<T>> executors) {
+    public BaseParallelExecutor(List<IExecutor<T>> executors) {
         super(executors);
     }
 
-    public BaseSuccessExitListExecutor(IExecutor<T>... executors) {
+    public BaseParallelExecutor(IExecutor<T>... executors) {
         super(Arrays.stream(executors).collect(Collectors.toList()));
     }
 
@@ -38,14 +38,14 @@ public class BaseSuccessExitListExecutor<T> extends BaseListExecutor<T> implemen
     }
 
     @Override
-    public ISuccessExitListExecutor<T> setPopElementOnSuccess(boolean popElementOnSuccess) {
+    public IParallelExecutor<T> setPopElementOnSuccess(boolean popElementOnSuccess) {
         this.popElementOnSuccess = popElementOnSuccess;
         return this;
     }
 
 
     @Override
-    public ISuccessExitListExecutor setErrorExit(boolean errorExit) {
+    public IParallelExecutor setErrorExit(boolean errorExit) {
         this.errorExit = errorExit;
         return this;
     }
@@ -57,7 +57,7 @@ public class BaseSuccessExitListExecutor<T> extends BaseListExecutor<T> implemen
     }
 
     @Override
-    public ISuccessExitListExecutor setErrorConsumer(BiConsumer<Exception, IExecutor<T>> errorConsumer) {
+    public IParallelExecutor setErrorConsumer(BiConsumer<Exception, IExecutor<T>> errorConsumer) {
         this.errorConsumer = errorConsumer;
         return this;
     }
@@ -68,7 +68,7 @@ public class BaseSuccessExitListExecutor<T> extends BaseListExecutor<T> implemen
     }
 
     @Override
-    public ISuccessExitListExecutor setSuccessExit(boolean successExit) {
+    public IParallelExecutor setSuccessExit(boolean successExit) {
         this.successExit = successExit;
         return this;
     }
@@ -79,7 +79,7 @@ public class BaseSuccessExitListExecutor<T> extends BaseListExecutor<T> implemen
     }
 
     @Override
-    public ISuccessExitListExecutor setSuccessConsumer(Consumer<IExecutor<T>> successConsumer) {
+    public IParallelExecutor setSuccessConsumer(Consumer<IExecutor<T>> successConsumer) {
         this.successConsumer = successConsumer;
         return this;
     }
