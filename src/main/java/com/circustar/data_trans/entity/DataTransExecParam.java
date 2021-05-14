@@ -14,9 +14,9 @@ import java.io.Serializable;
 @Builder(toBuilder = true)
 public class DataTransExecParam implements Serializable {
     @TableId
-    private String DataTransExecParamId;
+    private int DataTransExecParamId;
 
-    private String DataTransExecId;
+    private int DataTransExecId;
 
     private String paramName;
 

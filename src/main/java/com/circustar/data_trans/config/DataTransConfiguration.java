@@ -1,5 +1,6 @@
 package com.circustar.data_trans.config;
 
+import com.circustar.data_trans.service.*;
 import com.circustar.data_trans.service.impl.*;
 import com.circustar.data_trans.executor.DataTransExecutorManager;
 import org.mybatis.spring.annotation.MapperScan;
@@ -14,12 +15,13 @@ import java.sql.Connection;
 public class DataTransConfiguration {
     private DataSource dataSource;
     private DataTransExecutorManager dataTransExecutorManager;
-    private DataTransService dataTransService;
-    private DataTransGroupService dataTransGroupService;
-    private DataTransSourceService dataTransSourceService;
-    private DataTransColumnService dataTransColumnService;
-    private DataTransExecService dataTransExecService;
-    private DataTransExecParamService dataTransExecParamService;
+    private IDataTransService dataTransService;
+    private IDataTransGroupService dataTransGroupService;
+    private IDataTransSourceService dataTransSourceService;
+    private IDataTransColumnService dataTransColumnService;
+    private IDataTransExecService dataTransExecService;
+    private IDataTransExecStepService dataTransExecStepService;
+    private IDataTransExecParamService dataTransExecParamService;
     public DataTransConfiguration(DataSource dataSource) throws Exception {
         this.dataSource = dataSource;
         this.dataTransGroupService = new DataTransGroupService();
@@ -27,6 +29,7 @@ public class DataTransConfiguration {
         this.dataTransSourceService = new DataTransSourceService();
         this.dataTransColumnService = new DataTransColumnService();
         this.dataTransExecService = new DataTransExecService();
+        this.dataTransExecStepService = new DataTransExecStepService();
         this.dataTransExecParamService = new DataTransExecParamService();
         this.dataTransExecutorManager = new DataTransExecutorManager(dataSource
                 ,dataTransGroupService
@@ -34,6 +37,7 @@ public class DataTransConfiguration {
                 ,dataTransSourceService
                 ,dataTransColumnService
                 ,dataTransExecService
+                ,dataTransExecStepService
                 ,dataTransExecParamService);
         Connection connection = this.dataSource.getConnection();
         this.dataTransExecutorManager.execInit(connection);
@@ -41,32 +45,32 @@ public class DataTransConfiguration {
     }
 
     @Bean
-    public DataTransService getDataTransService() {
+    public IDataTransService getDataTransService() {
         return this.dataTransService;
     }
 
     @Bean
-    public DataTransGroupService getDataTransGroupService() {
+    public IDataTransGroupService getDataTransGroupService() {
         return this.dataTransGroupService;
     }
 
     @Bean
-    public DataTransSourceService getDataTransSourceService() {
+    public IDataTransSourceService getDataTransSourceService() {
         return this.dataTransSourceService;
     }
 
     @Bean
-    public DataTransColumnService getDataTransColumnService() {
+    public IDataTransColumnService getDataTransColumnService() {
         return this.dataTransColumnService;
     }
 
     @Bean
-    public DataTransExecService getDataTransExecService() {
+    public IDataTransExecService getDataTransExecService() {
         return this.dataTransExecService;
     }
 
     @Bean
-    public DataTransExecParamService getDataTransExecParamService() {
+    public IDataTransExecParamService getDataTransExecParamService() {
         return this.dataTransExecParamService;
     }
 

@@ -144,6 +144,28 @@ public class DataTransInitExecutorBuilder implements IDataTransExecutorBuilder {
                         , DataTransTableDefinition.initColumnDataTransExecParam(""))
                 , new EmptyExecutor<>()));
 
+        DataTrans dataTrans6 = DataTransTableDefinition.initDataTrans(dataTransGroup, DataTransTableDefinition.DATA_TRANS_ID_EXEC_STEP, DataTransTableDefinition.TABLE_NAME_EXEC_STEP);
+        listExecutor.addExecutor(new BaseParallelExecutor(
+                createCreateTableExecutor(dataTrans6
+                        , DataTransTableDefinition.initColumnDataTransExecStep(DataTransTableDefinition.DB_NAME_MYSQL))
+                , createCreateTableExecutor(dataTrans6
+                , DataTransTableDefinition.initColumnDataTransExecStep(DataTransTableDefinition.DB_NAME_ORACLE))
+                , createCreateTableExecutor(dataTrans6
+                , DataTransTableDefinition.initColumnDataTransExecStep(DataTransTableDefinition.DB_NAME_SQLSERVER))
+                , new EmptyExecutor<>()));
+
+        listExecutor.addExecutor(new BaseParallelExecutor(
+                createAddPrimaryKey1Executor(dataTrans6
+                        , DataTransTableDefinition.initColumnDataTransExecStep(""))
+                , createAddPrimaryKey2Executor(dataTrans6
+                , DataTransTableDefinition.initColumnDataTransExecStep(""))
+                , new EmptyExecutor<>()));
+
+        listExecutor.addExecutor(new BaseParallelExecutor(
+                createAddIndexExecutor(dataTrans6
+                        , DataTransTableDefinition.initColumnDataTransExecStep(""))
+                , new EmptyExecutor<>()));
+
         return listExecutor;
     }
 

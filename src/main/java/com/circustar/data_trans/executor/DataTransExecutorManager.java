@@ -1,12 +1,12 @@
 package com.circustar.data_trans.executor;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.circustar.common_utils.executor.*;
+import com.circustar.data_trans.common.Constant;
 import com.circustar.data_trans.entity.*;
-import com.circustar.data_trans.service.impl.*;
+import com.circustar.data_trans.service.*;
 import com.circustar.data_trans.executor.init.DataTransInitExecutorBuilder;
 import com.circustar.data_trans.executor.init.DataTransTableDefinition;
-import com.circustar.common_utils.executor.BaseListExecutor;
-import com.circustar.common_utils.executor.IExecutor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -21,17 +21,19 @@ import java.util.stream.Collectors;
 public class DataTransExecutorManager {
     private DataSource dataSource;
 
-    private DataTransGroupService dataTransGroupService;
+    private IDataTransGroupService dataTransGroupService;
 
-    private DataTransService dataTransService;
+    private IDataTransService dataTransService;
 
-    private DataTransSourceService dataTransSourceService;
+    private IDataTransSourceService dataTransSourceService;
 
-    private DataTransColumnService dataTransColumnService;
+    private IDataTransColumnService dataTransColumnService;
 
-    private DataTransExecService dataTransExecService;
+    private IDataTransExecService dataTransExecService;
 
-    private DataTransExecParamService dataTransExecParamService;
+    private IDataTransExecStepService dataTransExecStepService;
+
+    private IDataTransExecParamService dataTransExecParamService;
 
     private static Map<String, IExecutor<Map<String, Object>>> groupNameExecutorMap = new HashMap<>();
 
@@ -43,30 +45,54 @@ public class DataTransExecutorManager {
     }
 
     public DataTransExecutorManager(DataSource dataSource
-            , DataTransGroupService dataTransGroupService
-            , DataTransService dataTransService
-            , DataTransSourceService dataTransSourceService
-            , DataTransColumnService dataTransColumnService
-            , DataTransExecService dataTransExecService
-            , DataTransExecParamService dataTransExecParamService) {
+            , IDataTransGroupService dataTransGroupService
+            , IDataTransService dataTransService
+            , IDataTransSourceService dataTransSourceService
+            , IDataTransColumnService dataTransColumnService
+            , IDataTransExecService dataTransExecService
+            , IDataTransExecStepService dataTransExecStepService
+            , IDataTransExecParamService dataTransExecParamService) {
         this.dataTransGroupService = dataTransGroupService;
         this.dataTransService = dataTransService;
         this.dataTransSourceService = dataTransSourceService;
         this.dataTransColumnService = dataTransColumnService;
         this.dataTransExecService = dataTransExecService;
+        this.dataTransExecStepService = dataTransExecStepService;
         this.dataTransExecParamService = dataTransExecParamService;
     }
 
-    public IExecutor<Map<String, Object>> getExecutor(String groupName) {
-        if (groupNameExecutorMap.containsKey(groupName)) {
-            return groupNameExecutorMap.get(groupName);
+    public IExecutor<Map<String, Object>> getExecutor(DataTransGroup dataTransGroup, DataTransExec dataTransExec) {
+        Map<String, DataTransExecStep> dataTransExecStepMap = new HashMap<>();
+        boolean findError = false;
+        if(dataTransGroup.getRecoverable() == Constant.CONST_YES) {
+            QueryWrapper<DataTransExecStep> qwStep = new QueryWrapper<>();
+            qwStep.eq(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_EXEC_ID, dataTransExec.getDataTransExecId());
+            dataTransExecStepMap = dataTransExecStepService.list(qwStep)
+                    .stream().filter(x -> x.getExecuteError() == Constant.CONST_YES)
+                    .collect(Collectors.toMap(x -> x.getDataTransId(), y -> y));
+            findError = dataTransExecStepMap.keySet().isEmpty();
+        }
+
+        if(!findError) {
+            if (groupNameExecutorMap.containsKey(dataTransGroup.getDataTransGroupName())) {
+                return groupNameExecutorMap.get(dataTransGroup.getDataTransGroupName());
+            }
         }
         QueryWrapper<DataTrans> qw = new QueryWrapper<>();
-        qw.eq(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_GROUP_NAME, groupName);
+        qw.eq(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_GROUP_NAME, dataTransGroup.getDataTransGroupName());
         qw.orderByAsc(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_ID);
         List<DataTrans> dataTransList = dataTransService.list(qw);
+
         BaseListExecutor<Map<String, Object>> result = new BaseListExecutor<>();
+        boolean checkErrorMap = findError;
         for(DataTrans dataTrans : dataTransList) {
+            if(checkErrorMap) {
+                if(dataTransExecStepMap.containsKey(dataTrans.getDataTransId())) {
+                    checkErrorMap = false;
+                } else {
+                    continue;
+                }
+            }
             QueryWrapper qw2 = new QueryWrapper<>();
             qw2.eq(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_ID, dataTrans.getDataTransId());
             List<DataTransSource> dataTransSourceList = dataTransSourceService.list(qw2);
@@ -74,9 +100,19 @@ public class DataTransExecutorManager {
             DataTransExecutorBuilder dataTransExecutorBuilder = new DataTransExecutorBuilder(
                     dataTrans, dataTransSourceList, dataTransColumnList);
             IExecutor<Map<String, Object>> executor = dataTransExecutorBuilder.build();
+            executor.addAfterExecuteConsumer(param -> {
+                dataTransExecStepService.updateExecResult(dataTransExec.getDataTransExecId(), dataTrans.getDataTransId(), Constant.CONST_NO);
+            });
+
+            executor.setExecuteErrorConsumer((param, e) -> {
+                dataTransExecStepService.updateExecResult(dataTransExec.getDataTransExecId(), dataTrans.getDataTransId(), Constant.CONST_YES);
+            });
+
             result.addExecutor(executor);
         }
-        tryPutMap(groupName, result);
+        if(!findError) {
+            tryPutMap(dataTransGroup.getDataTransGroupName(), result);
+        }
         return result;
     }
 
@@ -91,7 +127,8 @@ public class DataTransExecutorManager {
 
     public void exec(int execId, Connection connection) throws Exception {
         DataTransExec dataTransExec = dataTransExecService.getById(execId);
-        IExecutor<Map<String, Object>> executor = getExecutor(dataTransExec.getDataTransGroupName());
+        DataTransGroup dataTransGroup = dataTransGroupService.getById(dataTransExec.getDataTransGroupName());
+        IExecutor<Map<String, Object>> executor = getExecutor(dataTransGroup, dataTransExec);
         QueryWrapper qw = new QueryWrapper();
         qw.eq(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_EXEC_ID, execId);
         List<DataTransExecParam> dataTransExecParams = dataTransExecParamService.list(qw);
@@ -102,11 +139,11 @@ public class DataTransExecutorManager {
         param.put(BaseSqlExecutor.EXEC_PARAM_AND_VALUE, execParam);
         try {
             executor.execute(param);
-            dataTransExec.setExecuteError(0);
+            dataTransExec.setExecuteError(Constant.CONST_NO);
             dataTransExec.setMessage("");
         } catch (Exception ex) {
             log.error(ex.getMessage());
-            dataTransExec.setExecuteError(1);
+            dataTransExec.setExecuteError(Constant.CONST_YES);
             dataTransExec.setMessage(ex.getMessage().length() > 1000?ex.getMessage().substring(0, 1000) : ex.getMessage());
         }
         dataTransExec.setExecuted(1);

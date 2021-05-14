@@ -16,5 +16,7 @@ public class DataTransGroup implements Serializable {
     @TableId
     private String dataTransGroupName;
 
+    private Integer recoverable;
+
     private String remark;
 }

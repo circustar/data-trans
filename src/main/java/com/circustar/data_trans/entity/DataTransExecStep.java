@@ -13,17 +13,17 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class DataTransExec implements Serializable {
+public class DataTransExecStep implements Serializable {
     @TableId
+    private int dataTransExecStepId;
+
     private int dataTransExecId;
 
-    private String dataTransGroupName;
+    private String dataTransId;
 
     private Integer executed;
 
     private Integer executeError;
 
     private Date executeTime;
-
-    private String message;
 }

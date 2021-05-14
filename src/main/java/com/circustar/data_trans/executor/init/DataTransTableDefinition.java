@@ -14,6 +14,7 @@ public class DataTransTableDefinition {
     public final static String TABLE_NAME_TRANS_COLUMN = "DATA_TRANS_COLUMN";
     public final static String TABLE_NAME_TRANS_SOURCE = "DATA_TRANS_SOURCE";
     public final static String TABLE_NAME_EXEC = "DATA_TRANS_EXEC";
+    public final static String TABLE_NAME_EXEC_STEP = "DATA_TRANS_EXEC_STEP";
     public final static String TABLE_NAME_EXEC_PARAM = "DATA_TRANS_EXEC_PARAM";
 
     public final static String COLUMN_NAME_DATA_TRANS_GROUP_NAME = "DATA_TRANS_GROUP_NAME";
@@ -26,7 +27,8 @@ public class DataTransTableDefinition {
     public final static String DATA_TRANS_ID_COLUMN = "_INIT_DATA_TRANS_2";
     public final static String DATA_TRANS_ID_SOURCE = "_INIT_DATA_TRANS_3";
     public final static String DATA_TRANS_ID_EXEC = "_INIT_DATA_TRANS_4";
-    public final static String DATA_TRANS_ID_EXEC_PARAM = "_INIT_DATA_TRANS_5";
+    public final static String DATA_TRANS_ID_EXEC_STEP = "_INIT_DATA_TRANS_5";
+    public final static String DATA_TRANS_ID_EXEC_PARAM = "_INIT_DATA_TRANS_6";
 
     public final static String DB_NAME_MYSQL = "mysql";
     public final static String DB_NAME_ORACLE = "oracle";
@@ -78,6 +80,11 @@ public class DataTransTableDefinition {
                 .columnName(COLUMN_NAME_DATA_TRANS_GROUP_NAME)
                 .columnType(getDataType(dbName,"varchar", "30"))
                 .primaryKey(1).build());
+        result.add(DataTransColumn.builder()
+                .dataTransId(DATA_TRANS_ID_GROUP)
+                .columnName("RECOVERABLE")
+                .columnType(getDataType(dbName,"int", "10"))
+                .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_GROUP)
                 .columnName("REMARK")
@@ -265,6 +272,43 @@ public class DataTransTableDefinition {
                 .build());
         return result;
     }
+
+    public static List<DataTransColumn> initColumnDataTransExecStep(String dbName) {
+        List<DataTransColumn> result = new ArrayList<>();
+        result.add(DataTransColumn.builder()
+                .dataTransId(DATA_TRANS_ID_EXEC_STEP)
+                .columnName("DATA_TRANS_EXEC_STEP_ID")
+                .columnType(getDataType(dbName,"int", "10"))
+                .primaryKey(1).build());
+        result.add(DataTransColumn.builder()
+                .dataTransId(DATA_TRANS_ID_EXEC_STEP)
+                .columnName(COLUMN_NAME_DATA_TRANS_EXEC_ID)
+                .columnType(getDataType(dbName,"int", "10"))
+                .indexName("IDX_" + TABLE_NAME_EXEC_STEP)
+                .build());
+        result.add(DataTransColumn.builder()
+                .dataTransId(DATA_TRANS_ID_EXEC_STEP)
+                .columnName(COLUMN_NAME_DATA_TRANS_ID)
+                .columnType(getDataType(dbName,"int", "10"))
+                .build());
+        result.add(DataTransColumn.builder()
+                .dataTransId(DATA_TRANS_ID_EXEC_STEP)
+                .columnName("EXECUTED")
+                .columnType(getDataType(dbName,"int", "10"))
+                .build());
+        result.add(DataTransColumn.builder()
+                .dataTransId(DATA_TRANS_ID_EXEC_STEP)
+                .columnName("EXECUTE_ERROR")
+                .columnType(getDataType(dbName,"int", "10"))
+                .build());
+        result.add(DataTransColumn.builder()
+                .dataTransId(DATA_TRANS_ID_EXEC_STEP)
+                .columnName("EXECUTE_TIME")
+                .columnType(getDataType(dbName,"datetime", ""))
+                .build());
+        return result;
+    }
+
     public static List<DataTransColumn> initColumnDataTransExecParam(String dbName) {
         List<DataTransColumn> result = new ArrayList<>();
         result.add(DataTransColumn.builder()
