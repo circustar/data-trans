@@ -56,6 +56,7 @@ public class DataTransExecutorManager {
             , IDataTransExecService dataTransExecService
             , IDataTransExecStepService dataTransExecStepService
             , IDataTransExecParamService dataTransExecParamService) {
+        this.dataSource = dataSource;
         this.dataTransGroupService = dataTransGroupService;
         this.dataTransService = dataTransService;
         this.dataTransSourceService = dataTransSourceService;
@@ -120,16 +121,18 @@ public class DataTransExecutorManager {
         return result;
     }
 
-    public void execInit(Connection connection) throws Exception {
-        DataTransInitExecutorBuilder dataTransInitExecutorBuilder = new DataTransInitExecutorBuilder();
-        IExecutor<Map<String, Object>> initExecutor = dataTransInitExecutorBuilder.build();
-        Map<String, Object> execParam = new HashMap<>();
-        execParam.put(BaseSqlExecutor.EXEC_CONNECTION, connection);
-        execParam.put(BaseSqlExecutor.EXEC_PARAM_AND_VALUE, new HashMap<>());
-        initExecutor.execute(execParam);
+    public void execInit() throws Exception {
+        try(Connection connection = dataSource.getConnection()) {
+            DataTransInitExecutorBuilder dataTransInitExecutorBuilder = new DataTransInitExecutorBuilder();
+            IExecutor<Map<String, Object>> initExecutor = dataTransInitExecutorBuilder.build();
+            Map<String, Object> execParam = new HashMap<>();
+            execParam.put(BaseSqlExecutor.EXEC_CONNECTION, connection);
+            execParam.put(BaseSqlExecutor.EXEC_PARAM_AND_VALUE, new HashMap<>());
+            initExecutor.execute(execParam);
+        }
     }
 
-    public void exec(int execId, Connection connection) throws Exception {
+    public void exec(int execId) throws Exception {
         DataTransExec dataTransExec = dataTransExecService.getById(execId);
         DataTransGroup dataTransGroup = dataTransGroupService.getById(dataTransExec.getDataTransGroupName());
         IExecutor<Map<String, Object>> executor = buildExecutor(dataTransGroup, dataTransExec);
@@ -139,9 +142,9 @@ public class DataTransExecutorManager {
         Map<String, String> execParam = dataTransExecParams.stream().collect(Collectors.toMap(DataTransExecParam::getParamName
                 , DataTransExecParam::getParamValue));
         Map<String, Object> param = new HashMap<>();
-        param.put(BaseSqlExecutor.EXEC_CONNECTION, connection);
-        param.put(BaseSqlExecutor.EXEC_PARAM_AND_VALUE, execParam);
-        try {
+        try(Connection connection = dataSource.getConnection()) {
+            param.put(BaseSqlExecutor.EXEC_CONNECTION, connection);
+            param.put(BaseSqlExecutor.EXEC_PARAM_AND_VALUE, execParam);
             executor.execute(param);
             dataTransExec.setExecuteError(Constant.CONST_NO);
             dataTransExec.setMessage("");

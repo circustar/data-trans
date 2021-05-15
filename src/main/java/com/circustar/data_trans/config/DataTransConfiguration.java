@@ -39,9 +39,7 @@ public class DataTransConfiguration {
                 ,dataTransExecService
                 ,dataTransExecStepService
                 ,dataTransExecParamService);
-        Connection connection = this.dataSource.getConnection();
-        this.dataTransExecutorManager.execInit(connection);
-        connection.close();
+        this.dataTransExecutorManager.execInit();
     }
 
     @Bean
