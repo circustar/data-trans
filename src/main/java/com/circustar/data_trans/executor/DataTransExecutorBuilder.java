@@ -27,14 +27,14 @@ public class DataTransExecutorBuilder implements IDataTransExecutorBuilder {
         if(dataTrans.getDropTableFlag() == Constant.CONST_YES) {
             listExecutor.addExecutor(new BaseParallelExecutor(
                     createDropTableExecutor(dataTrans)
-                            , new EmptyExecutor<>())
+                            , new EmptyConsumerExecutor<>())
             );
         }
         //生成Create
         if(dataTrans.getCreateTableFlag() == Constant.CONST_YES) {
             listExecutor.addExecutor(new BaseParallelExecutor(
                     createCreateTableExecutor(dataTrans, dataTransColumns)
-                    , new EmptyExecutor<>()));
+                    , new EmptyConsumerExecutor<>()));
         }
         //生成Truncate
         if(dataTrans.getTruncateTableFlag() == Constant.CONST_YES) {

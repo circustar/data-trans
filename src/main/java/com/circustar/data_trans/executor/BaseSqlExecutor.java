@@ -20,7 +20,7 @@ public class BaseSqlExecutor extends AbstractExecutor<Map<String, Object>> imple
     }
 
     @Override
-    public void execute(Map<String, Object> param) throws SQLException {
+    public void process(Map<String, Object> param) throws SQLException {
         Connection connection = (Connection) param.get(EXEC_CONNECTION);
         Map<String, String> paramAndValue = (Map<String, String>) param.get(EXEC_PARAM_AND_VALUE);
         String executeSql = sql;

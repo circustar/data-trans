@@ -56,7 +56,7 @@ public class BaseRetryExecutor<T> extends AbstractExecutor<T> implements IRetryE
     }
 
     @Override
-    public void execute(T param) throws Exception {
+    public void process(T param) throws Exception {
         Exception ex = null;
         for(int i = 0 ; i < retryCount; i++) {
             try {
@@ -70,7 +70,4 @@ public class BaseRetryExecutor<T> extends AbstractExecutor<T> implements IRetryE
         }
         throw ex;
     }
-
-
-
 }

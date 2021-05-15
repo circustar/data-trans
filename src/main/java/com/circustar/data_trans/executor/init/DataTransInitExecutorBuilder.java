@@ -20,19 +20,19 @@ public class DataTransInitExecutorBuilder implements IDataTransExecutorBuilder {
                 , DataTransTableDefinition.initColumnDataTransGroup(DataTransTableDefinition.DB_NAME_ORACLE))
                 , createCreateTableExecutor(dataTrans0
                 , DataTransTableDefinition.initColumnDataTransGroup(DataTransTableDefinition.DB_NAME_SQLSERVER))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddPrimaryKey1Executor(dataTrans0
                         , DataTransTableDefinition.initColumnDataTransGroup(""))
                 , createAddPrimaryKey2Executor(dataTrans0
                 , DataTransTableDefinition.initColumnDataTransGroup(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddIndexExecutor(dataTrans0
                         , DataTransTableDefinition.initColumnDataTransGroup(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         DataTrans dataTrans1 = DataTransTableDefinition.initDataTrans(dataTransGroup, DataTransTableDefinition.DATA_TRANS_ID_TRANS, DataTransTableDefinition.TABLE_NAME_TRANS);
         listExecutor.addExecutor(new BaseParallelExecutor(
@@ -42,19 +42,19 @@ public class DataTransInitExecutorBuilder implements IDataTransExecutorBuilder {
                 , DataTransTableDefinition.initColumnDataTrans(DataTransTableDefinition.DB_NAME_ORACLE))
                 , createCreateTableExecutor(dataTrans1
                 , DataTransTableDefinition.initColumnDataTrans(DataTransTableDefinition.DB_NAME_SQLSERVER))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddPrimaryKey1Executor(dataTrans1
                         , DataTransTableDefinition.initColumnDataTrans(""))
                 , createAddPrimaryKey2Executor(dataTrans1
                 , DataTransTableDefinition.initColumnDataTrans(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddIndexExecutor(dataTrans1
                         , DataTransTableDefinition.initColumnDataTrans(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         DataTrans dataTrans2 = DataTransTableDefinition.initDataTrans(dataTransGroup, DataTransTableDefinition.DATA_TRANS_ID_SOURCE, DataTransTableDefinition.TABLE_NAME_TRANS_SOURCE);
         listExecutor.addExecutor(new BaseParallelExecutor(
@@ -64,19 +64,19 @@ public class DataTransInitExecutorBuilder implements IDataTransExecutorBuilder {
                 , DataTransTableDefinition.initColumnDataTransSource(DataTransTableDefinition.DB_NAME_ORACLE))
                 , createCreateTableExecutor(dataTrans2
                 , DataTransTableDefinition.initColumnDataTransSource(DataTransTableDefinition.DB_NAME_SQLSERVER))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddPrimaryKey1Executor(dataTrans2
                         , DataTransTableDefinition.initColumnDataTransSource(""))
                 , createAddPrimaryKey2Executor(dataTrans2
                 , DataTransTableDefinition.initColumnDataTransSource(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddIndexExecutor(dataTrans2
                         , DataTransTableDefinition.initColumnDataTransSource(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         DataTrans dataTrans3 = DataTransTableDefinition.initDataTrans(dataTransGroup, DataTransTableDefinition.DATA_TRANS_ID_COLUMN, DataTransTableDefinition.TABLE_NAME_TRANS_COLUMN);
         listExecutor.addExecutor(new BaseParallelExecutor(
@@ -86,19 +86,19 @@ public class DataTransInitExecutorBuilder implements IDataTransExecutorBuilder {
                 , DataTransTableDefinition.initColumnDataTransColumn(DataTransTableDefinition.DB_NAME_ORACLE))
                 , createCreateTableExecutor(dataTrans3
                 , DataTransTableDefinition.initColumnDataTransColumn(DataTransTableDefinition.DB_NAME_SQLSERVER))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddPrimaryKey1Executor(dataTrans3
                         , DataTransTableDefinition.initColumnDataTransColumn(""))
                 , createAddPrimaryKey2Executor(dataTrans3
                 , DataTransTableDefinition.initColumnDataTransColumn(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddIndexExecutor(dataTrans3
                         , DataTransTableDefinition.initColumnDataTransColumn(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         DataTrans dataTrans4 = DataTransTableDefinition.initDataTrans(dataTransGroup, DataTransTableDefinition.DATA_TRANS_ID_EXEC, DataTransTableDefinition.TABLE_NAME_EXEC);
         listExecutor.addExecutor(new BaseParallelExecutor(
@@ -108,19 +108,19 @@ public class DataTransInitExecutorBuilder implements IDataTransExecutorBuilder {
                 , DataTransTableDefinition.initColumnDataTransExec(DataTransTableDefinition.DB_NAME_ORACLE))
                 , createCreateTableExecutor(dataTrans4
                 , DataTransTableDefinition.initColumnDataTransExec(DataTransTableDefinition.DB_NAME_SQLSERVER))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddPrimaryKey1Executor(dataTrans4
                         , DataTransTableDefinition.initColumnDataTransExec(""))
                 , createAddPrimaryKey2Executor(dataTrans4
                 , DataTransTableDefinition.initColumnDataTransExec(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddIndexExecutor(dataTrans4
                         , DataTransTableDefinition.initColumnDataTransExec(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         DataTrans dataTrans5 = DataTransTableDefinition.initDataTrans(dataTransGroup, DataTransTableDefinition.DATA_TRANS_ID_EXEC_PARAM, DataTransTableDefinition.TABLE_NAME_EXEC_PARAM);
         listExecutor.addExecutor(new BaseParallelExecutor(
@@ -130,19 +130,19 @@ public class DataTransInitExecutorBuilder implements IDataTransExecutorBuilder {
                 , DataTransTableDefinition.initColumnDataTransExecParam(DataTransTableDefinition.DB_NAME_ORACLE))
                 , createCreateTableExecutor(dataTrans5
                 , DataTransTableDefinition.initColumnDataTransExecParam(DataTransTableDefinition.DB_NAME_SQLSERVER))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddPrimaryKey1Executor(dataTrans5
                         , DataTransTableDefinition.initColumnDataTransExecParam(""))
                 , createAddPrimaryKey2Executor(dataTrans5
                 , DataTransTableDefinition.initColumnDataTransExecParam(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddIndexExecutor(dataTrans5
                         , DataTransTableDefinition.initColumnDataTransExecParam(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         DataTrans dataTrans6 = DataTransTableDefinition.initDataTrans(dataTransGroup, DataTransTableDefinition.DATA_TRANS_ID_EXEC_STEP, DataTransTableDefinition.TABLE_NAME_EXEC_STEP);
         listExecutor.addExecutor(new BaseParallelExecutor(
@@ -152,19 +152,19 @@ public class DataTransInitExecutorBuilder implements IDataTransExecutorBuilder {
                 , DataTransTableDefinition.initColumnDataTransExecStep(DataTransTableDefinition.DB_NAME_ORACLE))
                 , createCreateTableExecutor(dataTrans6
                 , DataTransTableDefinition.initColumnDataTransExecStep(DataTransTableDefinition.DB_NAME_SQLSERVER))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddPrimaryKey1Executor(dataTrans6
                         , DataTransTableDefinition.initColumnDataTransExecStep(""))
                 , createAddPrimaryKey2Executor(dataTrans6
                 , DataTransTableDefinition.initColumnDataTransExecStep(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         listExecutor.addExecutor(new BaseParallelExecutor(
                 createAddIndexExecutor(dataTrans6
                         , DataTransTableDefinition.initColumnDataTransExecStep(""))
-                , new EmptyExecutor<>()));
+                , new EmptyConsumerExecutor<>()));
 
         return listExecutor;
     }

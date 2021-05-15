@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public interface IDataTransExecutorBuilder {
+    public static final String UNIQUE_INDEX_PREFIX = "uni";
     default WhereStatement createWhereStatement(List<DataTransSource> dataTransSources) {
         WhereStatement topStatement = null;
         WhereStatement whereStatement = null;
@@ -237,10 +238,13 @@ public interface IDataTransExecutorBuilder {
             return null;
         }
 
-        List<BaseSqlExecutor> sqlExecutors = indexMap.entrySet().stream().map(x -> AddTableIndexSQLBuilder.builder().tableName(dataTrans.getTableName())
-                .indexName(x.getKey())
-                .columnInfoList(x.getValue().stream()
-                        .sorted(Comparator.comparingInt(DataTransColumn::getIndexOrder))
+        List<BaseSqlExecutor> sqlExecutors = indexMap.entrySet().stream()
+                .map(x -> AddTableIndexSQLBuilder.builder()
+                        .tableName(dataTrans.getTableName())
+                        .indexName(x.getKey())
+                        .isUnique(x.getKey().toLowerCase().startsWith(UNIQUE_INDEX_PREFIX))
+                        .columnInfoList(x.getValue().stream()
+                        .sorted(Comparator.comparingInt(a -> Optional.ofNullable(a.getIndexOrder()).orElse(0)))
                         .map(y -> y.getColumnName()).collect(Collectors.toList())).build().getSql()
         ).map(x -> new BaseSqlExecutor(x)).collect(Collectors.toList());
 

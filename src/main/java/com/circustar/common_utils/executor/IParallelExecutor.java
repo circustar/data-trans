@@ -4,7 +4,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public interface IParallelExecutor<T> extends IListExecutor<T> {
-    boolean getErrorExit();
+    boolean onErrorExit();
     IParallelExecutor<T> setErrorExit(boolean errorExit);
     boolean getPopElementOnSuccess();
     IParallelExecutor<T> setPopElementOnSuccess(boolean popElementOnSuccess);

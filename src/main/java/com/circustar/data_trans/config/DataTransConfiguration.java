@@ -70,6 +70,11 @@ public class DataTransConfiguration {
     }
 
     @Bean
+    public IDataTransExecStepService getDataTransExecStepService() {
+        return this.dataTransExecStepService;
+    }
+
+    @Bean
     public IDataTransExecParamService getDataTransExecParamService() {
         return this.dataTransExecParamService;
     }

@@ -8,7 +8,7 @@ public class NewThreadExecutor<T> extends AbstractExecutor<T>{
     }
 
     @Override
-    public void execute(T param) {
+    public void process(T param) {
         new Thread(() -> {
             try {
                 this.executor.execute(param);

@@ -16,10 +16,11 @@ import java.util.stream.Collectors;
 public class AddTableIndexSQLBuilder implements ISQLBuilder {
     private String tableName;
     private String indexName;
+    private boolean isUnique = false;
     private List<String> columnInfoList = new ArrayList<>();
 
     public String getSql() {
-        return "create index " + indexName + " on " + tableName
+        return "create " + (isUnique?"UNIQUE ":"") + "index " + indexName + " on " + tableName
                 + columnInfoList.stream().collect(Collectors.joining(",", "(", ")"));
     }
 }

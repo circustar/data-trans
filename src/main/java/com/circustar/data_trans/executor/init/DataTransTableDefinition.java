@@ -19,7 +19,11 @@ public class DataTransTableDefinition {
 
     public final static String COLUMN_NAME_DATA_TRANS_GROUP_NAME = "DATA_TRANS_GROUP_NAME";
     public final static String COLUMN_NAME_DATA_TRANS_ID = "DATA_TRANS_ID";
+    public final static String COLUMN_NAME_DATA_TRANS_SOURCE_ID = "DATA_TRANS_SOURCE_ID";
+    public final static String COLUMN_NAME_DATA_TRANS_COLUMN_ID = "DATA_TRANS_COLUMN_ID";
     public final static String COLUMN_NAME_DATA_TRANS_EXEC_ID = "DATA_TRANS_EXEC_ID";
+    public final static String COLUMN_NAME_DATA_TRANS_EXEC_PARAM_ID = "DATA_TRANS_EXEC_PARAM_ID";
+    public final static String COLUMN_NAME_DATA_TRANS_EXEC_STEP_ID = "DATA_TRANS_EXEC_STEP_ID";
 
     public final static String GROUP_NAME = "_INIT_DATA_TRANS";
     public final static String DATA_TRANS_ID_GROUP = "_INIT_DATA_TRANS_0";
@@ -30,6 +34,12 @@ public class DataTransTableDefinition {
     public final static String DATA_TRANS_ID_EXEC_STEP = "_INIT_DATA_TRANS_5";
     public final static String DATA_TRANS_ID_EXEC_PARAM = "_INIT_DATA_TRANS_6";
 
+    public final static String COLUMN_TYPE_VARCHAR = "varchar";
+    public final static String COLUMN_TYPE_INT = "int";
+    public final static String COLUMN_TYPE_NUMBER = "number";
+    public final static String COLUMN_TYPE_DATE = "date";
+    public final static String COLUMN_TYPE_DATETIME = "datetime";
+
     public final static String DB_NAME_MYSQL = "mysql";
     public final static String DB_NAME_ORACLE = "oracle";
     public final static String DB_NAME_SQLSERVER = "sqlserver";
@@ -37,25 +47,25 @@ public class DataTransTableDefinition {
 
     private static String getDataType(String dbName, String type, String precision) {
         if(DB_NAME_ORACLE.equalsIgnoreCase(dbName)) {
-            if (type.equalsIgnoreCase("datetime")) {
-                return "date";
-            } else if (type.equalsIgnoreCase("int")) {
-                return "number(" + precision + ", 0)" ;
+            if (type.equalsIgnoreCase(COLUMN_TYPE_DATETIME)) {
+                return COLUMN_TYPE_DATE;
+            } else if (type.equalsIgnoreCase(COLUMN_TYPE_INT)) {
+                return COLUMN_TYPE_NUMBER + "(" + precision + ", 0)" ;
             }
         }
         if(DB_NAME_MYSQL.equalsIgnoreCase(dbName)) {
-            if (type.equalsIgnoreCase("datetime")) {
-                return "datetime";
-            } else if (type.equalsIgnoreCase("int")) {
-                return "int(" + precision + ")" ;
+            if (type.equalsIgnoreCase(COLUMN_TYPE_DATETIME)) {
+                return COLUMN_TYPE_DATETIME;
+            } else if (type.equalsIgnoreCase(COLUMN_TYPE_INT)) {
+                return COLUMN_TYPE_INT +  "(" + precision + ")" ;
             }
         }
 
         if(DB_NAME_SQLSERVER.equalsIgnoreCase(dbName)) {
-            if (type.equalsIgnoreCase("datetime")) {
-                return "datetime";
-            } else if (type.equalsIgnoreCase("int")) {
-                return "int" ;
+            if (type.equalsIgnoreCase(COLUMN_TYPE_DATETIME)) {
+                return COLUMN_TYPE_DATETIME;
+            } else if (type.equalsIgnoreCase(COLUMN_TYPE_INT)) {
+                return COLUMN_TYPE_INT ;
             }
         }
         return type + (StringUtils.isEmpty(precision)?"":("(" + precision + ")"));
@@ -78,17 +88,17 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_GROUP)
                 .columnName(COLUMN_NAME_DATA_TRANS_GROUP_NAME)
-                .columnType(getDataType(dbName,"varchar", "30"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "30"))
                 .primaryKey(1).build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_GROUP)
                 .columnName("RECOVERABLE")
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_GROUP)
                 .columnName("REMARK")
-                .columnType(getDataType(dbName,"varchar", "200"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "200"))
                 .build());
         return result;
     }
@@ -98,48 +108,48 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName(COLUMN_NAME_DATA_TRANS_ID)
-                .columnType(getDataType(dbName,"varchar", "30"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "30"))
                 .primaryKey(1).build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName(COLUMN_NAME_DATA_TRANS_GROUP_NAME)
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
                 .indexName("IDX_" + TABLE_NAME_TRANS)
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName("TABLE_NAME")
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName("DISABLED")
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName("DROP_TABLE_FLAG")
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName("CREATE_TABLE_FLAG")
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName("TRUNCATE_TABLE_FLAG")
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName("UPDATE_TYPE")
-                .columnType(getDataType(dbName,"varchar", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "10"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName("REMARK")
-                .columnType(getDataType(dbName,"varchar", "200"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "200"))
                 .build());
         return result;
     }
@@ -148,39 +158,39 @@ public class DataTransTableDefinition {
         List<DataTransColumn> result = new ArrayList<>();
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_SOURCE)
-                .columnName("DATA_TRANS_SOURCE_ID")
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnName(COLUMN_NAME_DATA_TRANS_SOURCE_ID)
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
                 .primaryKey(1).build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_SOURCE)
                 .columnName(COLUMN_NAME_DATA_TRANS_ID)
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
                 .indexName("IDX_" + TABLE_NAME_TRANS_SOURCE)
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_SOURCE)
                 .columnName("SOURCE_TABLE")
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_SOURCE)
                 .columnName("ALIAS")
-                .columnType(getDataType(dbName,"varchar", "30"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "30"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_SOURCE)
                 .columnName("JOIN_TYPE")
-                .columnType(getDataType(dbName,"varchar", "20"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "20"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_SOURCE)
                 .columnName("ON_STATEMENT")
-                .columnType(getDataType(dbName,"varchar", "1000"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "1000"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_SOURCE)
                 .columnName("WHERE_STATEMENT")
-                .columnType(getDataType(dbName,"varchar", "2000"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "2000"))
                 .build());
         return result;
     }
@@ -189,34 +199,34 @@ public class DataTransTableDefinition {
         List<DataTransColumn> result = new ArrayList<>();
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_COLUMN)
-                .columnName("DATA_TRANS_COLUMN_ID")
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnName(COLUMN_NAME_DATA_TRANS_COLUMN_ID)
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
                 .primaryKey(1).build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_COLUMN)
                 .columnName(COLUMN_NAME_DATA_TRANS_ID)
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
                 .indexName("IDX_" + TABLE_NAME_TRANS_COLUMN)
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_COLUMN)
                 .columnName("COLUMN_NAME")
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_COLUMN)
                 .columnName("COLUMN_TYPE")
-                .columnType(getDataType(dbName,"varchar", "30"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "30"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_COLUMN)
                 .columnName("COLUMN_VALUE")
-                .columnType(getDataType(dbName,"varchar", "2000"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "2000"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_COLUMN)
                 .columnName("GROUP_FLAG")
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_COLUMN)
@@ -226,12 +236,12 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_COLUMN)
                 .columnName("INDEX_NAME")
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_COLUMN)
                 .columnName("INDEX_ORDER")
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
                 .build());
 
         return result;
@@ -242,33 +252,33 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC)
                 .columnName(COLUMN_NAME_DATA_TRANS_EXEC_ID)
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
                 .primaryKey(1).build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC)
                 .columnName(COLUMN_NAME_DATA_TRANS_GROUP_NAME)
-                .columnType(getDataType(dbName,"varchar", "100"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
                 .indexName("IDX_" + TABLE_NAME_EXEC)
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC)
                 .columnName("EXECUTED")
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC)
                 .columnName("EXECUTE_ERROR")
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC)
                 .columnName("EXECUTE_TIME")
-                .columnType(getDataType(dbName,"datetime", ""))
+                .columnType(getDataType(dbName,COLUMN_TYPE_DATETIME, ""))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC)
                 .columnName("MESSAGE")
-                .columnType(getDataType(dbName,"varchar", "1500"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "1500"))
                 .build());
         return result;
     }
@@ -277,34 +287,35 @@ public class DataTransTableDefinition {
         List<DataTransColumn> result = new ArrayList<>();
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_STEP)
-                .columnName("DATA_TRANS_EXEC_STEP_ID")
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnName(COLUMN_NAME_DATA_TRANS_EXEC_STEP_ID)
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "32"))
                 .primaryKey(1).build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_STEP)
                 .columnName(COLUMN_NAME_DATA_TRANS_EXEC_ID)
-                .columnType(getDataType(dbName,"int", "10"))
-                .indexName("IDX_" + TABLE_NAME_EXEC_STEP)
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
+                .indexName("UNI_IDX_" + TABLE_NAME_EXEC_STEP)
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_STEP)
                 .columnName(COLUMN_NAME_DATA_TRANS_ID)
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
+                .indexName("UNI_IDX_" + TABLE_NAME_EXEC_STEP)
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_STEP)
                 .columnName("EXECUTED")
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_STEP)
                 .columnName("EXECUTE_ERROR")
-                .columnType(getDataType(dbName,"int", "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_STEP)
                 .columnName("EXECUTE_TIME")
-                .columnType(getDataType(dbName,"datetime", ""))
+                .columnType(getDataType(dbName,COLUMN_TYPE_DATETIME, ""))
                 .build());
         return result;
     }
@@ -313,24 +324,24 @@ public class DataTransTableDefinition {
         List<DataTransColumn> result = new ArrayList<>();
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_PARAM)
-                .columnName("DATA_TRANS_EXEC_PARAM_ID")
-                .columnType(getDataType(dbName, "int", "10"))
+                .columnName(COLUMN_NAME_DATA_TRANS_EXEC_PARAM_ID)
+                .columnType(getDataType(dbName, COLUMN_TYPE_INT, "10"))
                 .primaryKey(1).build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_PARAM)
                 .columnName(COLUMN_NAME_DATA_TRANS_EXEC_ID)
-                .columnType(getDataType(dbName, "int", "10"))
+                .columnType(getDataType(dbName, COLUMN_TYPE_INT, "10"))
                 .indexName("IDX_" + TABLE_NAME_EXEC_PARAM)
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_PARAM)
                 .columnName("PARAM_NAME")
-                .columnType(getDataType(dbName,"varchar", "50"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "50"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_PARAM)
                 .columnName("PARAM_VALUE")
-                .columnType(getDataType(dbName,"varchar", "1000"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "1000"))
                 .build());
         return result;
     }

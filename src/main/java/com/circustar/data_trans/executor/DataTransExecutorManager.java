@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -44,6 +41,13 @@ public class DataTransExecutorManager {
         }
     }
 
+    private static void tryRemoveMap(String groupName) {
+        try {
+            groupNameExecutorMap.remove(groupName);
+        } catch (Exception ex) {
+        }
+    }
+
     public DataTransExecutorManager(DataSource dataSource
             , IDataTransGroupService dataTransGroupService
             , IDataTransService dataTransService
@@ -61,7 +65,7 @@ public class DataTransExecutorManager {
         this.dataTransExecParamService = dataTransExecParamService;
     }
 
-    public IExecutor<Map<String, Object>> getExecutor(DataTransGroup dataTransGroup, DataTransExec dataTransExec) {
+    public IExecutor<Map<String, Object>> buildExecutor(DataTransGroup dataTransGroup, DataTransExec dataTransExec) {
         Map<String, DataTransExecStep> dataTransExecStepMap = new HashMap<>();
         boolean findError = false;
         if(dataTransGroup.getRecoverable() == Constant.CONST_YES) {
@@ -70,7 +74,7 @@ public class DataTransExecutorManager {
             dataTransExecStepMap = dataTransExecStepService.list(qwStep)
                     .stream().filter(x -> x.getExecuteError() == Constant.CONST_YES)
                     .collect(Collectors.toMap(x -> x.getDataTransId(), y -> y));
-            findError = dataTransExecStepMap.keySet().isEmpty();
+            findError = !dataTransExecStepMap.keySet().isEmpty();
         }
 
         if(!findError) {
@@ -128,7 +132,7 @@ public class DataTransExecutorManager {
     public void exec(int execId, Connection connection) throws Exception {
         DataTransExec dataTransExec = dataTransExecService.getById(execId);
         DataTransGroup dataTransGroup = dataTransGroupService.getById(dataTransExec.getDataTransGroupName());
-        IExecutor<Map<String, Object>> executor = getExecutor(dataTransGroup, dataTransExec);
+        IExecutor<Map<String, Object>> executor = buildExecutor(dataTransGroup, dataTransExec);
         QueryWrapper qw = new QueryWrapper();
         qw.eq(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_EXEC_ID, execId);
         List<DataTransExecParam> dataTransExecParams = dataTransExecParamService.list(qw);
@@ -142,9 +146,11 @@ public class DataTransExecutorManager {
             dataTransExec.setExecuteError(Constant.CONST_NO);
             dataTransExec.setMessage("");
         } catch (Exception ex) {
-            log.error(ex.getMessage());
             dataTransExec.setExecuteError(Constant.CONST_YES);
-            dataTransExec.setMessage(ex.getMessage().length() > 1000?ex.getMessage().substring(0, 1000) : ex.getMessage());
+            String message = Optional.ofNullable(ex.getMessage()).orElse("unknown exception");
+            log.error(message);
+            dataTransExec.setMessage(message.length() > 1000 ? message.substring(0, 1000) : message);
+            tryRemoveMap(dataTransGroup.getDataTransGroupName());
         }
         dataTransExec.setExecuted(1);
         dataTransExec.setExecuteTime(new Date());
