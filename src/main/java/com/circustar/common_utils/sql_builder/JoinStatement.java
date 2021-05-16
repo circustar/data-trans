@@ -21,7 +21,7 @@ public class JoinStatement implements ISQLBuilder {
 
     @Override
     public String getSql() {
-        String jointTableString = selectSQLBuilder.getSql().toLowerCase();
+        String jointTableString = selectSQLBuilder.getSql();
         boolean containSubSql = jointTableString.contains("select")?true:false;
         if(containSubSql) {
             jointTableString = "(" + jointTableString + ")";

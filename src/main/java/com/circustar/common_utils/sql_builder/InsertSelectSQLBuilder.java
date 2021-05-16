@@ -19,7 +19,7 @@ public class InsertSelectSQLBuilder implements ISQLBuilder {
     private ISQLBuilder selectSqlBuilder;
 
     public String getSql() {
-        String selectSql = selectSqlBuilder.getSql().toLowerCase();
+        String selectSql = selectSqlBuilder.getSql();
         boolean containSelect = selectSql.contains("select");
         if(!containSelect) {
             selectSql = " select * from " + containSelect;

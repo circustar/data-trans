@@ -21,7 +21,7 @@ public class SelectSQLBuilder implements ISQLBuilder {
     private List<String> groupColumns = new ArrayList<>();
     private HavingStatement havingStatement;
     public String getSql() {
-        String mainTableString = mainTable.getSql().toLowerCase();
+        String mainTableString = mainTable.getSql();
         boolean containSubSql = mainTableString.contains("select")?true:false;
         if(containSubSql) {
             mainTableString = "(" + mainTableString + ")";
