@@ -24,10 +24,13 @@ public class BaseSqlExecutor extends AbstractExecutor<Map<String, Object>> imple
         Connection connection = (Connection) param.get(EXEC_CONNECTION);
         Map<String, String> paramAndValue = (Map<String, String>) param.get(EXEC_PARAM_AND_VALUE);
         String executeSql = sql;
-        if(paramAndValue != null) {
+        if(paramAndValue != null && sql.contains("#{")) {
+            log.info("parsing SQL:" + sql);
             executeSql = SPELParser.parseExpression(paramAndValue, sql).toString();
+            log.info("parsed SQL:" + executeSql);
+        } else {
+            log.info("SQL:" + executeSql);
         }
-        log.info(executeSql);
         Statement statement = connection.createStatement();
         statement.execute(executeSql);
     }
