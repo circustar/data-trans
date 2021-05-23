@@ -128,9 +128,10 @@ public class DataTransExecutorManager {
                     if(StringUtils.isEmpty(dataTrans.getSkipExpression())) {
                         return false;
                     }
-                    String skipResult = SPELParser.parseExpression(param, dataTrans.getSkipExpression()).toString().toLowerCase();
-                    return !(StringUtils.isEmpty(skipResult) || Constant.CONST_STR_FALSE.equals(skipResult)
-                            || Constant.CONST_NO.toString().equals(skipResult));
+                    String skipExpression = SPELParser.parseExpression(param.get(IDataTransSqlExecutor.EXEC_PARAM_AND_VALUE)
+                            , dataTrans.getSkipExpression()).toString().toLowerCase();
+                    Boolean skipResult = SPELParser.calcExpression(skipExpression, Boolean.class);
+                    return skipResult == null? false : skipResult;
                 });
         skipExecutor.addAfterExecuteConsumer(param -> {
             Long execId = (Long) param.get(IDataTransSqlExecutor.EXEC_ID);
