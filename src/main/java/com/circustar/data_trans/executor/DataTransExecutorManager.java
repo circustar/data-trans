@@ -156,8 +156,15 @@ public class DataTransExecutorManager {
     }
 
     public void exec(Long execId) {
+        exec(execId, false);
+    }
+
+    public void exec(Long execId, boolean refreshCache) {
         DataTransExec dataTransExec = dataTransExecService.getById(execId);
         DataTransGroup dataTransGroup = dataTransGroupService.getById(dataTransExec.getDataTransGroupName());
+        if(refreshCache) {
+            tryRemoveMap(dataTransGroup.getDataTransGroupName());
+        }
         IExecutor<Map<String, Object>> executor = buildExecutor(dataTransGroup);
         QueryWrapper qw = new QueryWrapper();
         qw.eq(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_EXEC_ID, execId);
