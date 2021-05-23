@@ -1,6 +1,7 @@
 package com.circustar.data_trans.executor;
 
 import com.circustar.common_utils.executor.AbstractExecutor;
+import com.circustar.data_trans.executor.init.DataTransTableDefinition;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -39,10 +40,11 @@ public class BaseDataTransSelectSqlExecutor extends AbstractExecutor<Map<String,
             Map<String, String> newMap = new HashMap<>();
             if (resultSet.next()) {
                 for (int i = 0; i < metaData.getColumnCount(); i++) {
-                    newMap.put(metaData.getColumnName(i), resultSet.getString(metaData.getColumnName(i)));
+                    newMap.put(metaData.getColumnLabel(i + 1), resultSet.getString(metaData.getColumnLabel(i + 1)));
                 }
             }
-            param.putAll(newMap);
+            Map<String, String> paramMap = (Map<String, String>) param.get(IDataTransSqlExecutor.EXEC_PARAM_AND_VALUE);
+            paramMap.putAll(newMap);
         } finally {
             if(resultSet != null) {
                 resultSet.close();

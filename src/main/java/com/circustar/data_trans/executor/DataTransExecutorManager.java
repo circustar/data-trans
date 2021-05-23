@@ -125,16 +125,12 @@ public class DataTransExecutorManager {
                     if(executedList.contains(dataTrans.getDataTransId())) {
                         return true;
                     }
-                    if(!StringUtils.isEmpty(dataTrans.getSkipExpression())) {
-                        String skipResult = SPELParser.parseExpression(param, dataTrans.getSkipExpression()).toString().toLowerCase();
-                        if(StringUtils.isEmpty(skipResult) || Constant.CONST_STR_FALSE.equals(skipResult)
-                                || Constant.CONST_NO.toString().equals(skipResult)) {
-                            return false;
-                        } else {
-                            return true;
-                        }
+                    if(StringUtils.isEmpty(dataTrans.getSkipExpression())) {
+                        return false;
                     }
-                    return false;
+                    String skipResult = SPELParser.parseExpression(param, dataTrans.getSkipExpression()).toString().toLowerCase();
+                    return !(StringUtils.isEmpty(skipResult) || Constant.CONST_STR_FALSE.equals(skipResult)
+                            || Constant.CONST_NO.toString().equals(skipResult));
                 });
         skipExecutor.addAfterExecuteConsumer(param -> {
             Long execId = (Long) param.get(IDataTransSqlExecutor.EXEC_ID);
