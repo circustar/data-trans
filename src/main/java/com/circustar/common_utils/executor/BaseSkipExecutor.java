@@ -8,7 +8,7 @@ public class BaseSkipExecutor<T> extends AbstractExecutor<T> implements ISkipExe
 
     @Override
     public ISkipExecutor<T> setSkipExpression(Predicate<T> predict) {
-        this.predicate = predicate;
+        this.predicate = predict;
         return this;
     }
 

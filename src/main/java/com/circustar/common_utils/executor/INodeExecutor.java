@@ -4,25 +4,21 @@ public interface INodeExecutor<T> extends IExecutor<T> {
     IExecutor<T> getExecutor();
     INodeExecutor<T> setExecutor(IExecutor<T> executor);
 
-    IExecutor<T> getSubExecutor();
-    INodeExecutor<T> setSubExecutor(IExecutor<T> executor);
+    IExecutor<T> getBeforeExecutor();
+    INodeExecutor<T> setBeforeExecutor(IExecutor<T> executor);
 
-    boolean getExecuteSubNodeFirst();
-    INodeExecutor<T> setExecuteSubNodeFirst(boolean executeSubNodeFirst);
+    IExecutor<T> getAfterExecutor();
+    INodeExecutor<T> setAfterExecutor(IExecutor<T> executor);
 
     default void process(T param)  {
-        if(getExecuteSubNodeFirst()) {
-            if(getExecutor()!= null) {
-                getExecutor().execute(param);
-            }
+        if(getBeforeExecutor()!= null) {
+            getBeforeExecutor().execute(param);
         }
-        if(getSubExecutor() != null) {
-            getSubExecutor().execute(param);
+        if(getExecutor() != null) {
+            getExecutor().execute(param);
         }
-        if(!getExecuteSubNodeFirst()) {
-            if(getExecutor()!= null) {
-                getExecutor().execute(param);
-            }
+        if(getAfterExecutor()!= null) {
+            getAfterExecutor().execute(param);
         }
     }
 }

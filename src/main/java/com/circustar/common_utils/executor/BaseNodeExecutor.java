@@ -1,14 +1,9 @@
 package com.circustar.common_utils.executor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class BaseNodeExecutor<T> extends AbstractExecutor<T> implements INodeExecutor<T> {
     private IExecutor<T> executor;
-    private IExecutor<T> subExecutor;
-    private boolean executeSubNodeFirst = false;
+    private IExecutor<T> beforeExecutor;
+    private IExecutor<T> afterExecutor;
 
     @Override
     public IExecutor<T> getExecutor() {
@@ -22,24 +17,24 @@ public class BaseNodeExecutor<T> extends AbstractExecutor<T> implements INodeExe
     }
 
     @Override
-    public IExecutor<T> getSubExecutor() {
-        return this.subExecutor;
+    public IExecutor<T> getBeforeExecutor() {
+        return this.beforeExecutor;
     }
 
     @Override
-    public INodeExecutor<T> setSubExecutor(IExecutor<T> executor) {
-        this.subExecutor = subExecutor;
+    public INodeExecutor<T> setBeforeExecutor(IExecutor<T> beforeExecutor) {
+        this.beforeExecutor = beforeExecutor;
         return this;
     }
 
     @Override
-    public boolean getExecuteSubNodeFirst() {
-        return executeSubNodeFirst;
+    public IExecutor<T> getAfterExecutor() {
+        return this.afterExecutor;
     }
 
     @Override
-    public INodeExecutor<T> setExecuteSubNodeFirst(boolean executeSubNodeFirst) {
-        this.executeSubNodeFirst = executeSubNodeFirst;
+    public INodeExecutor<T> setAfterExecutor(IExecutor<T> afterExecutor) {
+        this.afterExecutor = afterExecutor;
         return this;
     }
 }
