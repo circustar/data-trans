@@ -15,7 +15,7 @@ import java.util.Date;
 @Builder(toBuilder = true)
 public class DataTransExec implements Serializable {
     @TableId
-    private int dataTransExecId;
+    private Long dataTransExecId;
 
     private String dataTransGroupName;
 

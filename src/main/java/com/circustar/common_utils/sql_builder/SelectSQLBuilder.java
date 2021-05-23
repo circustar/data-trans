@@ -20,13 +20,15 @@ public class SelectSQLBuilder implements ISQLBuilder {
     private WhereStatement whereStatement;
     private List<String> groupColumns = new ArrayList<>();
     private HavingStatement havingStatement;
+    private String prefix = "";
+    private String suffix = "";
     public String getSql() {
         String mainTableString = mainTable.getSql();
         boolean containSubSql = mainTableString.contains("select")?true:false;
         if(containSubSql) {
             mainTableString = "(" + mainTableString + ")";
         }
-        String result = "select " + selectColumns.stream().collect(Collectors.joining(",")) + " from "
+        String result = "select " + (prefix == null?"":prefix) + " " + selectColumns.stream().collect(Collectors.joining(",")) + " from "
                 + mainTableString + " " + mainTableAlias
                 + joinStatementList.stream().map(x -> x.getSql()).collect(Collectors.joining(" "));
         if(whereStatement != null) {
@@ -39,6 +41,7 @@ public class SelectSQLBuilder implements ISQLBuilder {
         if(havingStatement != null) {
             result += " having " + havingStatement.getSql();
         }
+        result += " " + (suffix == null?"":suffix);
 
         return result;
     }

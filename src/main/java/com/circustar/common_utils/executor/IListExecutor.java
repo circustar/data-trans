@@ -9,7 +9,7 @@ public interface IListExecutor<T> extends IExecutor<T> {
 
     List<IExecutor<T>> getExecutors();
     IListExecutor setExecutors(List<IExecutor<T>> executors);
-    default void process(T param) throws Exception {
+    default void process(T param)  {
         List<IExecutor> executors = new ArrayList<>(getExecutors());
         for(IExecutor e : executors) {
             e.execute(param);

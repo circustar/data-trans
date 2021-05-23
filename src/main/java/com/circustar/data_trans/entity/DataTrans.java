@@ -19,6 +19,8 @@ public class DataTrans implements Serializable {
 
     private String dataTransGroupName;
 
+    private String dependDataTransId;
+
     private String tableName;
 
     @TableLogic
@@ -31,6 +33,14 @@ public class DataTrans implements Serializable {
     private Integer truncateTableFlag;
 
     private String updateType;
+
+    private String selectPrefix;
+
+    private String selectSuffix;
+
+    private String skipExpression;
+
+    private Integer addToParamMap;
 
     private String remark;
 

@@ -10,14 +10,14 @@ public interface IExecutor<T> {
     static <T> IExecutor<T> createExecutor(Supplier<IExecutor<T>> supplier) {
         return supplier.get();
     }
-    void process(T param) throws Exception;
+    void process(T param) ;
     List<Consumer<T>> getBeforeExecuteConsumers();
     IExecutor setBeforeExecuteConsumers(List<Consumer<T>> beforeExecuteConsumers);
     List<Consumer<T>> getAfterExecuteConsumers();
     IExecutor setAfterExecuteConsumers(List<Consumer<T>> afterExecuteConsumers);
     BiConsumer<T, Exception> getExecuteErrorConsumer();
     IExecutor setExecuteErrorConsumer(BiConsumer<T, Exception> executeErrorConsumer);
-    default void execute(T param) throws Exception
+    default void execute(T param) 
     {
         try {
             if(getBeforeExecuteConsumers() != null) {

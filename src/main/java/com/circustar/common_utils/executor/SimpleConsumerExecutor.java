@@ -10,7 +10,7 @@ public class SimpleConsumerExecutor<T> extends AbstractExecutor<T> {
         this.action = action;
     }
     @Override
-    public void process(T param) throws Exception {
+    public void process(T param) {
         action.accept(param);
     }
 }

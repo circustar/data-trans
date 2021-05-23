@@ -56,7 +56,7 @@ public class BaseRetryExecutor<T> extends AbstractExecutor<T> implements IRetryE
     }
 
     @Override
-    public void process(T param) throws Exception {
+    public void process(T param)  {
         Exception ex = null;
         for(int i = 0 ; i < retryCount; i++) {
             try {
@@ -66,8 +66,13 @@ public class BaseRetryExecutor<T> extends AbstractExecutor<T> implements IRetryE
                 ex = e;
                 getRetryErrorConsumer().accept(param, e);
             }
-            TimeUnit.SECONDS.sleep(delaySeconds);
+            try {
+                TimeUnit.SECONDS.sleep(delaySeconds);
+            } catch (Exception exp) {
+            }
         }
-        throw ex;
+        if(ex != null) {
+            throw new RuntimeException(ex);
+        }
     }
 }

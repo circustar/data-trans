@@ -6,6 +6,8 @@ import com.circustar.data_trans.entity.DataTrans;
 import com.circustar.data_trans.entity.DataTransColumn;
 import com.circustar.data_trans.entity.DataTransSource;
 import com.circustar.common_utils.executor.*;
+import com.circustar.data_trans.executor.init.DataTransTableDefinition;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,12 +53,20 @@ public class DataTransExecutorBuilder implements IDataTransExecutorBuilder {
             ).setPopElementOnSuccess(true));
         }
         if(UpdateType.INSERT.equals(updateType)) {
+            BaseParallelExecutor parallelExecutor = null;
+            //Add to map
+            BaseDataTransSqlExecutor insertValueExecutor = createInsertValueExecutor(dataTrans, dataTransColumns);
+            if(dataTrans.getAddToParamMap() == Constant.CONST_YES) {
+                parallelExecutor = new BaseParallelExecutor(
+                        createSelectToParamExecutor(dataTrans, dataTransSources, dataTransColumns));
+                listExecutor.addExecutor(parallelExecutor.setPopElementOnSuccess(true).addExecutor(insertValueExecutor));
+            }
             //生成Insert
-            listExecutor.addExecutor(
-                    new BaseParallelExecutor(
-                            createInsertSelectExecutor(dataTrans, dataTransSources, dataTransColumns),
-                            createInsertValueExecutor(dataTrans, dataTransColumns)
-                    ).setPopElementOnSuccess(true));
+            if(!StringUtils.isEmpty(dataTrans.getTableName())) {
+                parallelExecutor = new BaseParallelExecutor(
+                        createInsertSelectExecutor(dataTrans, dataTransSources, dataTransColumns));
+                listExecutor.addExecutor(parallelExecutor.setPopElementOnSuccess(true).addExecutor(insertValueExecutor));
+            }
         }
         if(UpdateType.UPDATE.equals(updateType)) {
             //生成Update
@@ -68,7 +78,7 @@ public class DataTransExecutorBuilder implements IDataTransExecutorBuilder {
                     ).setPopElementOnSuccess(true));
         }
 
-        List<BaseSqlExecutor> primaryKeyExecutors = Arrays.asList(createAddPrimaryKey1Executor(dataTrans, dataTransColumns)
+        List<BaseDataTransSqlExecutor> primaryKeyExecutors = Arrays.asList(createAddPrimaryKey1Executor(dataTrans, dataTransColumns)
                 , createAddPrimaryKey2Executor(dataTrans, dataTransColumns)).stream()
                 .filter(x -> x != null).collect(Collectors.toList());
         if(primaryKeyExecutors != null && primaryKeyExecutors.size() > 0) {

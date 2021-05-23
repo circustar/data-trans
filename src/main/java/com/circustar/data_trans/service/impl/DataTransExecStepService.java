@@ -10,7 +10,7 @@ import com.circustar.data_trans.service.IDataTransExecStepService;
 import java.util.Date;
 
 public class DataTransExecStepService extends ServiceImpl<DataTransExecStepMapper, DataTransExecStep> implements IDataTransExecStepService {
-    public void updateExecResult(int dataTransExecId, String dataTransId, int error) {
+    public void updateExecResult(Long dataTransExecId, String dataTransId, int error) {
         QueryWrapper qw = new QueryWrapper();
         qw.eq(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_EXEC_ID, dataTransExecId);
         qw.eq(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_ID, dataTransId);

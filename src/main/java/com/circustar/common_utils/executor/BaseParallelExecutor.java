@@ -85,7 +85,7 @@ public class BaseParallelExecutor<T> extends BaseListExecutor<T> implements IPar
     }
 
     @Override
-    public void process(T param) throws Exception {
+    public void process(T param)  {
         List<IExecutor<T>> executors = getExecutors();
         List<IExecutor<T>> loopList = new ArrayList<>(executors);
         Exception outException = null;
@@ -111,11 +111,11 @@ public class BaseParallelExecutor<T> extends BaseListExecutor<T> implements IPar
                     errorConsumer.accept(ex, executor);
                 }
                 if(onErrorExit()) {
-                    throw outException;
+                    throw new RuntimeException(outException);
                 }
             }
         }
-        throw outException;
+        throw new RuntimeException(outException);
     }
 
 }

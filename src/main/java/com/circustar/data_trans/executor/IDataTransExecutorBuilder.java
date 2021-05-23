@@ -6,13 +6,15 @@ import com.circustar.data_trans.entity.DataTransColumn;
 import com.circustar.data_trans.entity.DataTransSource;
 import com.circustar.common_utils.executor.*;
 import com.circustar.common_utils.sql_builder.*;
+import com.circustar.data_trans.executor.init.DataTransTableDefinition;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public interface IDataTransExecutorBuilder {
-    public static final String UNIQUE_INDEX_PREFIX = "uni";
+    String UNIQUE_INDEX_PREFIX = "uni";
     default WhereStatement createWhereStatement(List<DataTransSource> dataTransSources) {
         WhereStatement topStatement = null;
         WhereStatement whereStatement = null;
@@ -72,7 +74,8 @@ public interface IDataTransExecutorBuilder {
     }
 
     default ISQLBuilder createSelectSQLBuilder(List<DataTransSource> dataTransSources
-            , List<DataTransColumn> dataTransColumns, boolean withColumnAlias) {
+            , List<DataTransColumn> dataTransColumns, boolean withColumnAlias
+            , String prefix, String suffix) {
         List<DataTransSource> sortedSourceList = dataTransSources.stream().sorted(Comparator.comparing(DataTransSource::getDataTransSourceId)).collect(Collectors.toList());
         SelectSQLBuilder.SelectSQLBuilderBuilder selectSQLBuilderBuilder = SelectSQLBuilder.builder();
         selectSQLBuilderBuilder.mainTable(new StringStatement(sortedSourceList.get(0).getSourceTable()));
@@ -86,16 +89,18 @@ public interface IDataTransExecutorBuilder {
                 .joinStatementList(joinStatementList)
                 .whereStatement(whereStatement)
                 .groupColumns(dataTransColumns.stream().filter(x -> x.getGroupFlag()== Constant.CONST_YES)
-                        .map(x -> x.getColumnValue()).collect(Collectors.toList()));
+                        .map(x -> x.getColumnValue()).collect(Collectors.toList()))
+                .prefix(prefix)
+                .suffix(suffix);
         return selectSQLBuilderBuilder.build();
     }
 
-    default BaseSqlExecutor createDropTableExecutor(DataTrans dataTrans) {
+    default BaseDataTransSqlExecutor createDropTableExecutor(DataTrans dataTrans) {
         String sql = DropTableSQLBuilder.builder().tableName(dataTrans.getTableName()).build().getSql();
-        BaseSqlExecutor baseSqlExecutor = new BaseSqlExecutor(sql);
-        return baseSqlExecutor;
+        BaseDataTransSqlExecutor baseDataTransSqlExecutor = new BaseDataTransSqlExecutor(sql);
+        return baseDataTransSqlExecutor;
     }
-    default BaseSqlExecutor createCreateTableExecutor(DataTrans dataTrans, List<DataTransColumn> dataTransColumns) {
+    default BaseDataTransSqlExecutor createCreateTableExecutor(DataTrans dataTrans, List<DataTransColumn> dataTransColumns) {
         List<TableColumnProperty> tableColumns = dataTransColumns.stream().filter(x -> !StringUtils.isEmpty(x.getColumnName()))
                 .map(x -> TableColumnProperty.builder()
                         .columnName(x.getColumnName())
@@ -105,84 +110,101 @@ public interface IDataTransExecutorBuilder {
                 .tableName(dataTrans.getTableName())
                 .ColumnInfoList(tableColumns)
                 .build().getSql();
-        BaseSqlExecutor baseSqlExecutor = new BaseSqlExecutor( sql);
-        return baseSqlExecutor;
+        BaseDataTransSqlExecutor baseDataTransSqlExecutor = new BaseDataTransSqlExecutor( sql);
+        return baseDataTransSqlExecutor;
     }
-    default BaseSqlExecutor createTruncateTableExecutor(DataTrans dataTrans) {
+    default BaseDataTransSqlExecutor createTruncateTableExecutor(DataTrans dataTrans) {
         String sql = TruncateTableSQLBuilder.builder().tableName(dataTrans.getTableName()).build().getSql();
-        BaseSqlExecutor baseSqlExecutor = new BaseSqlExecutor(sql);
-        return baseSqlExecutor;
+        BaseDataTransSqlExecutor baseDataTransSqlExecutor = new BaseDataTransSqlExecutor(sql);
+        return baseDataTransSqlExecutor;
     }
 
-    default BaseSqlExecutor createDeleteValueExecutor(DataTrans dataTrans, List<DataTransSource> dataTransSources) {
+    default BaseDataTransSqlExecutor createDeleteValueExecutor(DataTrans dataTrans, List<DataTransSource> dataTransSources) {
         WhereStatement whereStatement = createWhereStatement(dataTransSources);
         String sql = DeleteValueSQLBuilder.builder().deleteTable(dataTrans.getTableName())
                 .whereStatement(whereStatement)
                 .build().getSql();
-        BaseSqlExecutor baseSqlExecutor = new BaseSqlExecutor(sql);
-        return baseSqlExecutor;
+        BaseDataTransSqlExecutor baseDataTransSqlExecutor = new BaseDataTransSqlExecutor(sql);
+        return baseDataTransSqlExecutor;
     }
 
-    default BaseSqlExecutor createDeleteExistExecutor(DataTrans dataTrans, List<DataTransSource> dataTransSources) {
+    default BaseDataTransSqlExecutor createDeleteExistExecutor(DataTrans dataTrans, List<DataTransSource> dataTransSources) {
         ISQLBuilder selectSQLBuilder = createSelectSQLBuilder(dataTransSources
-                , Collections.singletonList(DataTransColumn.builder().columnValue("*").build()), false);
+                , Collections.singletonList(DataTransColumn.builder().columnValue("*").build())
+                , false, "", "");
 
         String sql = DeleteExistSQLBuilder.builder().deleteTable(dataTrans.getTableName())
                 .selectSqlBuilder(selectSQLBuilder)
                 .build().getSql();
-        BaseSqlExecutor baseSqlExecutor = new BaseSqlExecutor(sql);
-        return baseSqlExecutor;
+        BaseDataTransSqlExecutor baseDataTransSqlExecutor = new BaseDataTransSqlExecutor(sql);
+        return baseDataTransSqlExecutor;
     }
 
-    default BaseSqlExecutor createInsertSelectExecutor(DataTrans dataTrans
-            , List<DataTransSource> dataTransSources, List<DataTransColumn> dataTransColumns) {
+    default BaseDataTransSqlExecutor createInsertSelectExecutor(DataTrans dataTrans
+            , List<DataTransSource> dataTransSources
+            , List<DataTransColumn> dataTransColumns) {
         ISQLBuilder selectSQLBuilder = createSelectSQLBuilder(dataTransSources
-                , dataTransColumns, true);
+                , dataTransColumns, true
+                , dataTrans.getSelectPrefix(), dataTrans.getSelectSuffix());
 
         String sql = InsertSelectSQLBuilder.builder().insertColumnList(dataTransColumns.stream()
                 .map(x -> x.getColumnName()).collect(Collectors.toList()))
                 .insertTable(dataTrans.getTableName())
                 .selectSqlBuilder(selectSQLBuilder)
                 .build().getSql();
-        BaseSqlExecutor baseSqlExecutor = new BaseSqlExecutor(sql);
-        return baseSqlExecutor;
+        BaseDataTransSqlExecutor baseDataTransSqlExecutor = new BaseDataTransSqlExecutor(sql);
+        return baseDataTransSqlExecutor;
     }
 
-    default BaseSqlExecutor createInsertValueExecutor(DataTrans dataTrans
+
+    default BaseDataTransSelectSqlExecutor createSelectToParamExecutor(DataTrans dataTrans
+            , List<DataTransSource> dataTransSources
+            , List<DataTransColumn> dataTransColumns) {
+        ISQLBuilder selectSQLBuilder = createSelectSQLBuilder(dataTransSources
+                , dataTransColumns, true
+                , dataTrans.getSelectPrefix(), dataTrans.getSelectSuffix());
+
+        BaseDataTransSelectSqlExecutor executor = new BaseDataTransSelectSqlExecutor(selectSQLBuilder.getSql());
+        return executor;
+    }
+
+    default BaseDataTransSqlExecutor createInsertValueExecutor(DataTrans dataTrans
             , List<DataTransColumn> dataTransColumns) {
         String sql = InsertValueSQLBuilder.builder().columnNameValueMap(dataTransColumns.stream()
                 .collect(Collectors.toMap(DataTransColumn::getColumnName, DataTransColumn::getColumnValue)))
                 .insertTable(dataTrans.getTableName())
                 .build().getSql();
-        BaseSqlExecutor baseSqlExecutor = new BaseSqlExecutor(sql);
-        return baseSqlExecutor;
+        BaseDataTransSqlExecutor baseDataTransSqlExecutor = new BaseDataTransSqlExecutor(sql);
+        return baseDataTransSqlExecutor;
     }
 
-    default BaseSqlExecutor createUpdateValueExecutor(DataTrans dataTrans, List<DataTransSource> dataTransSources, List<DataTransColumn> dataTransColumns) {
+    default BaseDataTransSqlExecutor createUpdateValueExecutor(DataTrans dataTrans, List<DataTransSource> dataTransSources, List<DataTransColumn> dataTransColumns) {
         Map<String, String> columnNameValueMap = dataTransColumns.stream().collect(Collectors.toMap(DataTransColumn::getColumnName, DataTransColumn::getColumnValue));
         WhereStatement whereStatement = createWhereStatement(dataTransSources);
         String sql = UpdateValueSQLBuilder.builder().updateTable(dataTrans.getTableName())
                 .columnNameValueMap(columnNameValueMap)
                 .whereStatement(whereStatement)
                 .build().getSql();
-        BaseSqlExecutor baseSqlExecutor = new BaseSqlExecutor(sql);
-        return baseSqlExecutor;
+        BaseDataTransSqlExecutor baseDataTransSqlExecutor = new BaseDataTransSqlExecutor(sql);
+        return baseDataTransSqlExecutor;
     }
 
-    default BaseSqlExecutor createUpdateExistExecutor(DataTrans dataTrans, List<DataTransSource> dataTransSources, List<DataTransColumn> dataTransColumns) {
+    default BaseDataTransSqlExecutor createUpdateExistExecutor(DataTrans dataTrans, List<DataTransSource> dataTransSources, List<DataTransColumn> dataTransColumns) {
         List<String> columnNameList = dataTransColumns.stream().map(x -> x.getColumnName()).collect(Collectors.toList());
-        ISQLBuilder selectSQLBuilder = createSelectSQLBuilder(dataTransSources, dataTransColumns, true);
+        ISQLBuilder selectSQLBuilder = createSelectSQLBuilder(dataTransSources, dataTransColumns, true
+                , "", "");
         ISQLBuilder existSQLBuilder = createSelectSQLBuilder(dataTransSources
-                , Collections.singletonList(DataTransColumn.builder().columnValue("*").build()), false);
+                , Collections.singletonList(DataTransColumn.builder().columnValue("*").build()), false
+                , "", "");
         String sql = UpdateExistSQLBuilder.builder().updateTable(dataTrans.getTableName())
                 .updateColumnList(columnNameList)
                 .selectSQLBuilder(selectSQLBuilder)
                 .existSQLBuilder(existSQLBuilder)
                 .build().getSql();
-        BaseSqlExecutor baseSqlExecutor = new BaseSqlExecutor(sql);
-        return baseSqlExecutor;
+        BaseDataTransSqlExecutor baseDataTransSqlExecutor = new BaseDataTransSqlExecutor(sql);
+        return baseDataTransSqlExecutor;
     }
-    default BaseSqlExecutor createUpdateJoinExecutor(DataTrans dataTrans, List<DataTransSource> dataTransSources, List<DataTransColumn> dataTransColumns) {
+    default BaseDataTransSqlExecutor createUpdateJoinExecutor(DataTrans dataTrans, List<DataTransSource> dataTransSources, List<DataTransColumn> dataTransColumns) {
         Map<String, String> columnNameValueMap = dataTransColumns.stream().collect(Collectors.toMap(DataTransColumn::getColumnName, DataTransColumn::getColumnValue));
         List<DataTransSource> sortedSourceList = dataTransSources.stream().sorted(Comparator.comparing(DataTransSource::getDataTransSourceId)).collect(Collectors.toList());
         List<JoinStatement> joinStatementList = createCommaJoinStatements(sortedSourceList);
@@ -194,11 +216,11 @@ public interface IDataTransExecutorBuilder {
                 .columnNameValueMap(columnNameValueMap)
                 .joinStatements(joinStatementList)
                 .build().getSql();
-        BaseSqlExecutor baseSqlExecutor = new BaseSqlExecutor(sql);
-        return baseSqlExecutor;
+        BaseDataTransSqlExecutor baseDataTransSqlExecutor = new BaseDataTransSqlExecutor(sql);
+        return baseDataTransSqlExecutor;
     }
 
-    default BaseSqlExecutor createAddPrimaryKey1Executor(DataTrans dataTrans
+    default BaseDataTransSqlExecutor createAddPrimaryKey1Executor(DataTrans dataTrans
             , List<DataTransColumn> dataTransColumns) {
         List<String> keyColumns = dataTransColumns.stream().filter(x -> x.getPrimaryKey() == Constant.CONST_YES)
                 .map(x -> x.getColumnName()).collect(Collectors.toList());
@@ -209,11 +231,11 @@ public interface IDataTransExecutorBuilder {
                 .primaryKeyName("PK_" + dataTrans.getTableName())
                 .columnInfoList(keyColumns)
                 .build().getSql();
-        BaseSqlExecutor baseSqlExecutor = new BaseSqlExecutor(sql);
-        return baseSqlExecutor;
+        BaseDataTransSqlExecutor baseDataTransSqlExecutor = new BaseDataTransSqlExecutor(sql);
+        return baseDataTransSqlExecutor;
     }
 
-    default BaseSqlExecutor createAddPrimaryKey2Executor(DataTrans dataTrans
+    default BaseDataTransSqlExecutor createAddPrimaryKey2Executor(DataTrans dataTrans
             , List<DataTransColumn> dataTransColumns) {
         List<String> keyColumns = dataTransColumns.stream().filter(x -> x.getPrimaryKey() == Constant.CONST_YES)
                 .map(x -> x.getColumnName()).collect(Collectors.toList());
@@ -224,8 +246,8 @@ public interface IDataTransExecutorBuilder {
                 .primaryKeyName("PK_" + dataTrans.getTableName())
                 .columnInfoList(keyColumns)
                 .build().getSql();
-        BaseSqlExecutor baseSqlExecutor = new BaseSqlExecutor(sql);
-        return baseSqlExecutor;
+        BaseDataTransSqlExecutor baseDataTransSqlExecutor = new BaseDataTransSqlExecutor(sql);
+        return baseDataTransSqlExecutor;
     }
 
     default  BaseListExecutor<Map<String, Object>> createAddIndexExecutor(DataTrans dataTrans
@@ -238,7 +260,7 @@ public interface IDataTransExecutorBuilder {
             return null;
         }
 
-        List<BaseSqlExecutor> sqlExecutors = indexMap.entrySet().stream()
+        List<BaseDataTransSqlExecutor> sqlExecutors = indexMap.entrySet().stream()
                 .map(x -> AddTableIndexSQLBuilder.builder()
                         .tableName(dataTrans.getTableName())
                         .indexName(x.getKey())
@@ -246,7 +268,7 @@ public interface IDataTransExecutorBuilder {
                         .columnInfoList(x.getValue().stream()
                         .sorted(Comparator.comparingInt(a -> Optional.ofNullable(a.getIndexOrder()).orElse(0)))
                         .map(y -> y.getColumnName()).collect(Collectors.toList())).build().getSql()
-        ).map(x -> new BaseSqlExecutor(x)).collect(Collectors.toList());
+        ).map(x -> new BaseDataTransSqlExecutor(x)).collect(Collectors.toList());
 
         return new BaseListExecutor(sqlExecutors);
     }

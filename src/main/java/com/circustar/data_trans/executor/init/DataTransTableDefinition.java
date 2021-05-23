@@ -43,6 +43,7 @@ public class DataTransTableDefinition {
     public final static String DB_NAME_MYSQL = "mysql";
     public final static String DB_NAME_ORACLE = "oracle";
     public final static String DB_NAME_SQLSERVER = "sqlserver";
+    public final static String DB_NAME_DB2 = "db2";
     public final static String[] SUPPORT_DB = {DB_NAME_MYSQL, DB_NAME_ORACLE, DB_NAME_SQLSERVER};
 
     private static String getDataType(String dbName, String type, String precision) {
@@ -108,13 +109,21 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName(COLUMN_NAME_DATA_TRANS_ID)
-                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "30"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
                 .primaryKey(1).build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName(COLUMN_NAME_DATA_TRANS_GROUP_NAME)
                 .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
                 .indexName("IDX_" + TABLE_NAME_TRANS)
+                .indexOrder(1)
+                .build());
+        result.add(DataTransColumn.builder()
+                .dataTransId(DATA_TRANS_ID_TRANS)
+                .columnName("DEPEND_DATA_TRANS_ID")
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
+                .indexName("IDX_" + TABLE_NAME_TRANS)
+                .indexOrder(2)
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
@@ -145,6 +154,26 @@ public class DataTransTableDefinition {
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName("UPDATE_TYPE")
                 .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "10"))
+                .build());
+        result.add(DataTransColumn.builder()
+                .dataTransId(DATA_TRANS_ID_TRANS)
+                .columnName("SELECT_PREFIX")
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "50"))
+                .build());
+        result.add(DataTransColumn.builder()
+                .dataTransId(DATA_TRANS_ID_TRANS)
+                .columnName("SELECT_SUFFIX")
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "50"))
+                .build());
+        result.add(DataTransColumn.builder()
+                .dataTransId(DATA_TRANS_ID_TRANS)
+                .columnName("SKIP_EXPRESSION")
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "200"))
+                .build());
+        result.add(DataTransColumn.builder()
+                .dataTransId(DATA_TRANS_ID_TRANS)
+                .columnName("ADD_TO_PARAM_MAP")
+                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
