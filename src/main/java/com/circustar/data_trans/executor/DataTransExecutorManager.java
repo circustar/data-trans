@@ -129,7 +129,8 @@ public class DataTransExecutorManager {
                         return false;
                     }
                     String skipExpression = SPELParser.parseExpression(param.get(IDataTransSqlExecutor.EXEC_PARAM_AND_VALUE)
-                            , dataTrans.getSkipExpression()).toString().toLowerCase();
+                            , dataTrans.getSkipExpression()).toString().trim();
+                    if(StringUtils.isEmpty(skipExpression)) {return false;}
                     Boolean skipResult = SPELParser.calcExpression(skipExpression, Boolean.class);
                     return skipResult == null? false : skipResult;
                 });
