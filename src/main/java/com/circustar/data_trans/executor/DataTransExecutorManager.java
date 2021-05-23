@@ -69,7 +69,7 @@ public class DataTransExecutorManager {
         this.dataTransExecParamService = dataTransExecParamService;
     }
 
-    public IExecutor<Map<String, Object>> buildExecutor(DataTransGroup dataTransGroup) {
+    private IExecutor<Map<String, Object>> buildExecutor(DataTransGroup dataTransGroup) {
         if (groupNameExecutorMap.containsKey(dataTransGroup.getDataTransGroupName())) {
             return groupNameExecutorMap.get(dataTransGroup.getDataTransGroupName());
         }
