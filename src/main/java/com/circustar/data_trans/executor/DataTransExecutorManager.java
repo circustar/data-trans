@@ -9,7 +9,6 @@ import com.circustar.data_trans.service.*;
 import com.circustar.data_trans.executor.init.DataTransInitExecutorBuilder;
 import com.circustar.data_trans.executor.init.DataTransTableDefinition;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -98,11 +97,10 @@ public class DataTransExecutorManager {
 
         BaseListExecutor<Map<String, Object>> result = new BaseListExecutor<>();
         for(DataTrans dataTrans : topDataTrans) {
-            BaseNodeExecutor<Map<String, Object>> nodeExecutor = new BaseNodeExecutor<>();
-            nodeExecutor.setExecutor(createExecutor(dataTrans));
+            BaseLinkedExecutor<Map<String, Object>> nodeExecutor = new BaseLinkedExecutor<>(createExecutor(dataTrans));
             IExecutor<Map<String, Object>> subExecutor = createExecutors(oriDataTransList, x -> dataTrans.getDataTransId().equals(x.getDependDataTransId()));
             if(subExecutor != null) {
-                nodeExecutor.setAfterExecutor(subExecutor);
+                nodeExecutor.setNextExecutor(subExecutor);
             }
             result.addExecutor(nodeExecutor);
         }
