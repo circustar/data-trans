@@ -23,6 +23,7 @@ public class DataTransConfiguration {
     private IDataTransExecStepService dataTransExecStepService;
     private IDataTransExecParamService dataTransExecParamService;
     public DataTransConfiguration(DataSource dataSource) throws Exception {
+        assert(dataSource != null);
         this.dataSource = dataSource;
         this.dataTransGroupService = new DataTransGroupService();
         this.dataTransService = new DataTransService();
