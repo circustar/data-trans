@@ -55,17 +55,17 @@ public class DataTransExecutorBuilder implements IDataTransExecutorBuilder {
         if(UpdateType.INSERT.equals(updateType)) {
             BaseParallelExecutor parallelExecutor = null;
             //Add to map
-            BaseDataTransSqlExecutor insertValueExecutor = createInsertValueExecutor(dataTrans, dataTransColumns);
+            //BaseDataTransSqlExecutor insertValueExecutor = createInsertValueExecutor(dataTrans, dataTransColumns);
             if(dataTrans.getAddToParamMap() == Constant.CONST_YES) {
                 parallelExecutor = new BaseParallelExecutor(
                         createSelectToParamExecutor(dataTrans, dataTransSources, dataTransColumns));
-                listExecutor.addExecutor(parallelExecutor.setPopElementOnSuccess(true).addExecutor(insertValueExecutor));
+                listExecutor.addExecutor(parallelExecutor.setPopElementOnSuccess(true));
             }
             //生成Insert
             if(!StringUtils.isEmpty(dataTrans.getTableName())) {
                 parallelExecutor = new BaseParallelExecutor(
                         createInsertSelectExecutor(dataTrans, dataTransSources, dataTransColumns));
-                listExecutor.addExecutor(parallelExecutor.setPopElementOnSuccess(true).addExecutor(insertValueExecutor));
+                listExecutor.addExecutor(parallelExecutor.setPopElementOnSuccess(true));
             }
         }
         if(UpdateType.UPDATE.equals(updateType)) {
