@@ -41,7 +41,7 @@ public class WhereStatement implements ISQLBuilder {
     public String getSql() {
         String result = sqlWhere;
         if(nextWhereStatement != null) {
-            result = result + (StringUtils.isEmpty(result)?"" : nextWhereStatement.logicType.getLogicType())
+            result = result + (!StringUtils.hasLength(result)?"" : nextWhereStatement.logicType.getLogicType())
                     + "(" + nextWhereStatement.getSql() + ")" ;
         }
         return result;

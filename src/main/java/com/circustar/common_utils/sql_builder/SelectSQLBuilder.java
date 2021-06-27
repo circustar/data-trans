@@ -35,7 +35,7 @@ public class SelectSQLBuilder implements ISQLBuilder {
             result += " where " + whereStatement.getSql();
         }
         if(groupColumns != null && groupColumns.size() > 0) {
-            result += " group by " + groupColumns.stream().filter(x -> !StringUtils.isEmpty(x))
+            result += " group by " + groupColumns.stream().filter(x -> StringUtils.hasLength(x))
                     .collect(Collectors.joining(" , "));
         }
         if(havingStatement != null) {

@@ -62,7 +62,7 @@ public class DataTransExecutorBuilder implements IDataTransExecutorBuilder {
                 listExecutor.addExecutor(parallelExecutor.setPopElementOnSuccess(true));
             }
             //生成Insert
-            if(!StringUtils.isEmpty(dataTrans.getTableName())) {
+            if(StringUtils.hasLength(dataTrans.getTableName())) {
                 parallelExecutor = new BaseParallelExecutor(
                         createInsertSelectExecutor(dataTrans, dataTransSources, dataTransColumns));
                 listExecutor.addExecutor(parallelExecutor.setPopElementOnSuccess(true));

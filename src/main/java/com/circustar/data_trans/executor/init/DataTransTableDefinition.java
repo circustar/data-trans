@@ -69,7 +69,7 @@ public class DataTransTableDefinition {
                 return COLUMN_TYPE_INT ;
             }
         }
-        return type + (StringUtils.isEmpty(precision)?"":("(" + precision + ")"));
+        return type + (!StringUtils.hasLength(precision)?"":("(" + precision + ")"));
     }
 
     public static DataTransGroup initGroup() {

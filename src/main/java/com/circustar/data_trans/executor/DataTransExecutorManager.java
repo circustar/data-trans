@@ -79,7 +79,7 @@ public class DataTransExecutorManager {
         List<DataTrans> oriDataTransList = dataTransService.list(qw).stream()
                 .filter(x -> !Constant.CONST_YES.equals(x.getDisabled())).collect(Collectors.toList());
 
-        IExecutor<Map<String, Object>> result = createExecutors(oriDataTransList, x -> StringUtils.isEmpty(x.getDependDataTransId()));
+        IExecutor<Map<String, Object>> result = createExecutors(oriDataTransList, x -> !StringUtils.hasLength(x.getDependDataTransId()));
 
         tryPutMap(dataTransGroup.getDataTransGroupName(), result);
         return result;
@@ -123,12 +123,12 @@ public class DataTransExecutorManager {
                     if(executedList.contains(dataTrans.getDataTransId())) {
                         return true;
                     }
-                    if(StringUtils.isEmpty(dataTrans.getSkipExpression())) {
+                    if(!StringUtils.hasLength(dataTrans.getSkipExpression())) {
                         return false;
                     }
                     String skipExpression = SPELParser.parseExpression(param.get(IDataTransSqlExecutor.EXEC_PARAM_AND_VALUE)
                             , dataTrans.getSkipExpression()).toString().trim();
-                    if(StringUtils.isEmpty(skipExpression)) {return false;}
+                    if(!StringUtils.hasLength(skipExpression)) {return false;}
                     Boolean skipResult = SPELParser.calcExpression(skipExpression, Boolean.class);
                     return skipResult == null? false : skipResult;
                 });

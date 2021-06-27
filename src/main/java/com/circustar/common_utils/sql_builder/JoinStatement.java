@@ -27,7 +27,7 @@ public class JoinStatement implements ISQLBuilder {
             jointTableString = "(" + jointTableString + ")";
         }
         String result = " " + joinType + " " + jointTableString + " " + joinTableAlias;
-        if(!StringUtils.isEmpty(onStatement)) {
+        if(StringUtils.hasLength(onStatement)) {
             result +=  " ON " + onStatement;
         }
 

@@ -23,7 +23,7 @@ public class SetStatement implements ISQLBuilder {
         for(String key :columnValueMap.keySet()) {
             result = "," + key + " = " + columnValueMap.get(key);
         }
-        if(!StringUtils.isEmpty(result)) {
+        if(StringUtils.hasLength(result)) {
             result = result.substring(1);
         }
         return result;

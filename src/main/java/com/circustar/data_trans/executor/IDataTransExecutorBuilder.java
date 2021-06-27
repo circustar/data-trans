@@ -20,7 +20,7 @@ public interface IDataTransExecutorBuilder {
         WhereStatement whereStatement = null;
         WhereStatement nextWhereStatement ;
         for(DataTransSource dataTransSource : dataTransSources) {
-            if(StringUtils.isEmpty(dataTransSource.getWhereStatement())) {
+            if(!StringUtils.hasLength(dataTransSource.getWhereStatement())) {
                 continue;
             }
             if(whereStatement == null) {
@@ -40,7 +40,7 @@ public interface IDataTransExecutorBuilder {
         WhereStatement whereStatement = null;
         WhereStatement nextWhereStatement ;
         for(DataTransSource dataTransSource : dataTransSources) {
-            if(StringUtils.isEmpty(dataTransSource.getOnStatement())) {
+            if(!StringUtils.hasLength(dataTransSource.getOnStatement())) {
                 continue;
             }
             if(whereStatement == null) {
@@ -56,10 +56,10 @@ public interface IDataTransExecutorBuilder {
     }
 
     default List<JoinStatement> createJoinStatements(List<DataTransSource> sortedDataTransSources) {
-        List<JoinStatement> result = sortedDataTransSources.stream().filter(x -> !StringUtils.isEmpty(x.getJoinType()))
+        List<JoinStatement> result = sortedDataTransSources.stream().filter(x -> StringUtils.hasLength(x.getJoinType()))
                 .map(x -> JoinStatement.builder()
                         .selectSQLBuilder(new StringStatement(x.getSourceTable()))
-                        .joinTableAlias(StringUtils.isEmpty(x.getAlias()) ? x.getSourceTable() : x.getAlias())
+                        .joinTableAlias(!StringUtils.hasLength(x.getAlias()) ? x.getSourceTable() : x.getAlias())
                         .joinType(x.getJoinType())
                         .onStatement(x.getOnStatement()).build()).collect(Collectors.toList());
         return result;
@@ -68,7 +68,7 @@ public interface IDataTransExecutorBuilder {
     default List<JoinStatement> createCommaJoinStatements(List<DataTransSource> sortedDataTransSources) {
         List<JoinStatement> result = sortedDataTransSources.stream().map(x -> JoinStatement.builder()
                         .selectSQLBuilder(new StringStatement(x.getSourceTable()))
-                        .joinTableAlias(StringUtils.isEmpty(x.getAlias()) ? x.getSourceTable() : x.getAlias())
+                        .joinTableAlias(!StringUtils.hasLength(x.getAlias()) ? x.getSourceTable() : x.getAlias())
                         .joinType(",").build()).collect(Collectors.toList());
         return result;
     }
@@ -101,7 +101,7 @@ public interface IDataTransExecutorBuilder {
         return baseDataTransSqlExecutor;
     }
     default BaseDataTransSqlExecutor createCreateTableExecutor(DataTrans dataTrans, List<DataTransColumn> dataTransColumns) {
-        List<TableColumnProperty> tableColumns = dataTransColumns.stream().filter(x -> !StringUtils.isEmpty(x.getColumnName()))
+        List<TableColumnProperty> tableColumns = dataTransColumns.stream().filter(x -> StringUtils.hasLength(x.getColumnName()))
                 .map(x -> TableColumnProperty.builder()
                         .columnName(x.getColumnName())
                         .columnTypeWithLength(x.getColumnType())
@@ -253,7 +253,7 @@ public interface IDataTransExecutorBuilder {
     default  BaseListExecutor<Map<String, Object>> createAddIndexExecutor(DataTrans dataTrans
             , List<DataTransColumn> dataTransColumns) {
         Map<String, List<DataTransColumn>> indexMap = dataTransColumns.stream()
-                .filter(x -> !StringUtils.isEmpty(x.getIndexName())).collect(
+                .filter(x -> StringUtils.hasLength(x.getIndexName())).collect(
                         Collectors.groupingBy(DataTransColumn::getIndexName)
                 );
         if(indexMap.isEmpty()) {

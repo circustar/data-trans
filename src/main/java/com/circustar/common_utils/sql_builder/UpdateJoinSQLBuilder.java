@@ -25,7 +25,7 @@ public class UpdateJoinSQLBuilder implements ISQLBuilder {
         if(joinStatements != null) {
             joinString = joinStatements.stream()
                     .map(x -> x.getSql())
-                    .filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(""));
+                    .filter(x -> StringUtils.hasLength(x)).collect(Collectors.joining(""));
         }
 
         String updateSql = "UPDATE " + updateTable + " " + joinString  + " SET "
