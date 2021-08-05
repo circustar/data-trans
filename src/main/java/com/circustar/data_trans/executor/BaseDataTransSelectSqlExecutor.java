@@ -33,8 +33,9 @@ public class BaseDataTransSelectSqlExecutor extends AbstractExecutor<Map<String,
     @Override
     public void execSQL(Connection connection , String sql, Map<String, Object> param) throws Exception {
         ResultSet resultSet = null;
+        Statement statement = null;
         try {
-            Statement statement = connection.createStatement();
+            statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
             ResultSetMetaData metaData = resultSet.getMetaData();
             Map<String, String> newMap = new HashMap<>();
@@ -46,6 +47,9 @@ public class BaseDataTransSelectSqlExecutor extends AbstractExecutor<Map<String,
             Map<String, String> paramMap = (Map<String, String>) param.get(IDataTransSqlExecutor.EXEC_PARAM_AND_VALUE);
             paramMap.putAll(newMap);
         } finally {
+            if(statement != null) {
+                statement.close();
+            }
             if(resultSet != null) {
                 resultSet.close();
             }

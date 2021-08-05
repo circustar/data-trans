@@ -28,7 +28,14 @@ public class BaseDataTransSqlExecutor extends AbstractExecutor<Map<String, Objec
     }
     @Override
     public void execSQL(Connection connection , String sql, Map<String, Object> param) throws Exception {
-        Statement statement = connection.createStatement();
-        statement.execute(sql);
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            statement.execute(sql);
+        } finally {
+            if(statement != null) {
+                statement.close();
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@
         </plugins>
     </build>
     <name>data-trans</name>
-    <description>auto create table and execute sql</description>
+    <description>etl tools for Oracle/MySQL/SqlServer/DB2</description>
 
     <properties>
         <java.version>1.8</java.version>
