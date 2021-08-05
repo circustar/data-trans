@@ -88,7 +88,7 @@ public interface IDataTransExecutorBuilder {
         selectSQLBuilderBuilder.mainTableAlias(sortedSourceList.get(0).getAlias())
                 .joinStatementList(joinStatementList)
                 .whereStatement(whereStatement)
-                .groupColumns(dataTransColumns.stream().filter(x -> x.getGroupFlag()== Constant.CONST_YES)
+                .groupColumns(dataTransColumns.stream().filter(x -> Constant.CONST_YES.equals(x.getGroupFlag()))
                         .map(x -> x.getColumnValue()).collect(Collectors.toList()))
                 .prefix(prefix)
                 .suffix(suffix);
@@ -105,7 +105,7 @@ public interface IDataTransExecutorBuilder {
                 .map(x -> TableColumnProperty.builder()
                         .columnName(x.getColumnName())
                         .columnTypeWithLength(x.getColumnType())
-                        .nullable(x.getPrimaryKey() != Constant.CONST_YES).build()).collect(Collectors.toList());
+                        .nullable(!Constant.CONST_YES.equals(x.getPrimaryKey())).build()).collect(Collectors.toList());
         String sql = CreateTableSQLBuilder.builder()
                 .tableName(dataTrans.getTableName())
                 .ColumnInfoList(tableColumns)
@@ -222,7 +222,7 @@ public interface IDataTransExecutorBuilder {
 
     default BaseDataTransSqlExecutor createAddPrimaryKey1Executor(DataTrans dataTrans
             , List<DataTransColumn> dataTransColumns) {
-        List<String> keyColumns = dataTransColumns.stream().filter(x -> x.getPrimaryKey() == Constant.CONST_YES)
+        List<String> keyColumns = dataTransColumns.stream().filter(x -> Constant.CONST_YES.equals(x.getPrimaryKey()))
                 .map(x -> x.getColumnName()).collect(Collectors.toList());
         if(keyColumns.size() == 0) {
             return null;
@@ -237,7 +237,7 @@ public interface IDataTransExecutorBuilder {
 
     default BaseDataTransSqlExecutor createAddPrimaryKey2Executor(DataTrans dataTrans
             , List<DataTransColumn> dataTransColumns) {
-        List<String> keyColumns = dataTransColumns.stream().filter(x -> x.getPrimaryKey() == Constant.CONST_YES)
+        List<String> keyColumns = dataTransColumns.stream().filter(x -> Constant.CONST_YES.equals(x.getPrimaryKey()))
                 .map(x -> x.getColumnName()).collect(Collectors.toList());
         if(keyColumns.size() == 0) {
             return null;

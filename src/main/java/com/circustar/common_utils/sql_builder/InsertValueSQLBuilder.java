@@ -18,12 +18,12 @@ public class InsertValueSQLBuilder implements ISQLBuilder {
     private Map<String, String> columnNameValueMap = new HashMap<>();
 
     public String getSql() {
-        String insertColumns = "";
-        String insertValues = "";
+        StringBuffer insertColumns = new StringBuffer();
+        StringBuffer insertValues = new StringBuffer();
         Set<Map.Entry<String, String>> entries = columnNameValueMap.entrySet();
         for(Map.Entry<String, String> entry : entries) {
-            insertColumns += "," + entry.getKey();
-            insertValues += "," + entry.getValue();
+            insertColumns.append("," + entry.getKey());
+            insertValues.append("," + entry.getValue());
         }
         return "Insert into " + insertTable
                 + "(" + insertColumns.substring(1) + ") values ("

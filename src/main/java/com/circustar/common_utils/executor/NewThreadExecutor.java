@@ -15,6 +15,6 @@ public class NewThreadExecutor<T> extends AbstractExecutor<T>{
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }).run();
+        }).start();
     }
 }

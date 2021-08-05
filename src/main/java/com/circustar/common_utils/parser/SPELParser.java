@@ -11,9 +11,9 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import java.util.List;
 
 public class SPELParser {
-    public static ExpressionParser expressionParser = new SpelExpressionParser();
+    public final static ExpressionParser expressionParser = new SpelExpressionParser();
 
-    private static ParserContext parserContext = new TemplateParserContext();
+    private final static ParserContext parserContext = new TemplateParserContext();
 
     public static <T> T calcExpression(String expressionString, Class<T> clazz) {
         Expression expression = expressionParser.parseExpression(expressionString);

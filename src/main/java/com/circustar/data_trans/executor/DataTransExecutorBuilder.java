@@ -39,7 +39,7 @@ public class DataTransExecutorBuilder implements IDataTransExecutorBuilder {
                     , new EmptyConsumerExecutor<>()));
         }
         //生成Truncate
-        if(dataTrans.getTruncateTableFlag() == Constant.CONST_YES) {
+        if(Constant.CONST_YES.equals(dataTrans.getTruncateTableFlag())) {
             listExecutor.addExecutor(createTruncateTableExecutor(dataTrans));
         }
 
@@ -56,7 +56,7 @@ public class DataTransExecutorBuilder implements IDataTransExecutorBuilder {
             BaseParallelExecutor parallelExecutor = null;
             //Add to map
             //BaseDataTransSqlExecutor insertValueExecutor = createInsertValueExecutor(dataTrans, dataTransColumns);
-            if(dataTrans.getAddToParamMap() == Constant.CONST_YES) {
+            if(Constant.CONST_YES.equals(dataTrans.getAddToParamMap())) {
                 parallelExecutor = new BaseParallelExecutor(
                         createSelectToParamExecutor(dataTrans, dataTransSources, dataTransColumns));
                 listExecutor.addExecutor(parallelExecutor.setPopElementOnSuccess(true));

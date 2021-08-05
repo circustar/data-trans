@@ -173,11 +173,11 @@ public class DataTransExecutorManager {
                 , DataTransExecParam::getParamValue));
         Map<String, Object> param = new HashMap<>();
         Set<String> executedDataTransSet = new HashSet();
-        if(dataTransGroup.getRecoverable() == Constant.CONST_YES) {
+        if(Constant.CONST_YES.equals(dataTransGroup.getRecoverable())) {
             QueryWrapper<DataTransExecStep> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_EXEC_ID, execId);
             executedDataTransSet = dataTransExecStepService.list(queryWrapper)
-                    .stream().filter(x -> x.getExecuted() == Constant.CONST_YES && x.getExecuteError() == Constant.CONST_NO)
+                    .stream().filter(x -> Constant.CONST_YES.equals(x.getExecuted()) && Constant.CONST_NO.equals(x.getExecuteError()))
                     .map(x -> x.getDataTransId())
                     .collect(Collectors.toSet());
         }

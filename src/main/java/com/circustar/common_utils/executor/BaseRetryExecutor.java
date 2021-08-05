@@ -4,8 +4,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 public class BaseRetryExecutor<T> extends AbstractExecutor<T> implements IRetryExecutor<T> {
-    public static int DEFAULT_RETRY_COUNT = 2;
-    public static int DEFAULT_DELAY_SECONDS = 5;
+    public final static int DEFAULT_RETRY_COUNT = 2;
+    public final static int DEFAULT_DELAY_SECONDS = 5;
     protected int retryCount;
     protected int delaySeconds;
     protected IExecutor executor;

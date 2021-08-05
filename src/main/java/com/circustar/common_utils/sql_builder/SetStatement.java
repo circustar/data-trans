@@ -19,14 +19,14 @@ public class SetStatement implements ISQLBuilder {
 
     @Override
     public String getSql() {
-        String result = "";
-        for(String key :columnValueMap.keySet()) {
-            result = "," + key + " = " + columnValueMap.get(key);
+        StringBuffer result = new StringBuffer();
+        for(Map.Entry<String, String> entry :columnValueMap.entrySet()) {
+            result.append("," + entry.getKey() + " = " + entry.getValue());
         }
         if(StringUtils.hasLength(result)) {
-            result = result.substring(1);
+            return result.substring(1);
         }
-        return result;
+        return result.toString();
     }
 
 }
