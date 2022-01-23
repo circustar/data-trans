@@ -155,6 +155,19 @@ public class DataTransExecutorManager {
         }
     }
 
+    public Long addExecInfo(String execGroupName, Map<String, String> paramMap) {
+        DataTransExec dataTransExec = DataTransExec.builder().dataTransGroupName(execGroupName).build();
+        dataTransExecService.save(dataTransExec);
+
+        if(paramMap != null && !paramMap.isEmpty()) {
+            List<DataTransExecParam> execParamList = paramMap.entrySet().stream().map(x -> DataTransExecParam.builder()
+                    .DataTransExecId(dataTransExec.getDataTransExecId())
+                    .paramName(x.getKey()).paramValue(x.getValue()).build()).collect(Collectors.toList());
+            dataTransExecParamService.saveBatch(execParamList);
+        }
+        return dataTransExec.getDataTransExecId();
+    }
+
     public void exec(Long execId) {
         exec(execId, false);
     }

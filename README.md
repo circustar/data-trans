@@ -67,26 +67,7 @@
 | INDEX_NAME  | 索引名称 | 文字 |  |
 | INDEX_ORDER  | 所在索引的顺序 | 数字 |  |
 
-#### 4.2.定义执行参数信息
-##### 4.2.1.DATA_TRANS_EXEC中放入执行信息
-|  字段名   | 名称  | 类型  | 备注  |
-|  ----  | ----  | ----  | ----  |
-| DATA_TRANS_EXEC_ID  | 表ID | 数字 |  |
-| DATA_TRANS_GROUP_NAME  | 数据处理组名称 | 文字 |  |
-| EXECUTED  | 是否已执行完成 | 数字 | 执行完成后自动填入 |
-| EXECUTE_ERROR  | 执行时是否发生错误 | 数字 | 执行完成后自动填入 |
-| EXECUTE_TIME  | 执行时间 | 时间 | 执行完成后自动填入 |
-| MESSAGE  | 报错信息 | 文字 | 执行完成后自动填入 |
-
-##### 4.2.2.DATA_TRANS_EXEC_PARAM中定义执行名称
-|  字段名   | 名称  | 类型  | 备注  |
-|  ----  | ----  | ----  | ----  |
-| DATA_TRANS_EXEC_PARAM_ID  | 表ID | 文字 |  |
-| DATA_TRANS_EXEC_ID  | 执行ID | 数字 |  |
-| PARAM_NAME  | 参数名 | 文字 |  |
-| PARAM_VALUE  | 参数值 | 文字 |  |
-
-#### 4.3.执行
+#### 4.2.执行
 ```java
 public class TestDataTrans {
     @Autowired
@@ -94,7 +75,15 @@ public class TestDataTrans {
 
     @Test
     public void Test01(){
-        executorManager.exec(1L); // exec方法参数表示DATA_TRANS_EXEC_ID
+        // 创建执行参数
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("param1", "test");
+        Long execId = executorManager.addExecInfo("test", paramMap);
+
+        // 执行
+        executorManager.exec(execId);
     }
 }
 ```
+
+#### 4.3.DATA_TRANS_EXEC表中查看执行结果
