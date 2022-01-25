@@ -77,8 +77,8 @@ public class TestDataTrans {
     public void Test01(){
         // 创建执行参数
         Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("param1", "test");
-        Long execId = executorManager.addExecInfo("test", paramMap);
+        paramMap.put("param1", "testParam");
+        Long execId = executorManager.addExecInfo("testGroup", paramMap);
 
         // 执行
         executorManager.exec(execId);

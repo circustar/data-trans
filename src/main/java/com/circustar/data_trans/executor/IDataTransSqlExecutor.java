@@ -16,10 +16,7 @@ public interface IDataTransSqlExecutor extends IExecutor<Map<String, Object>> {
     default void process(Map<String, Object> param){
         Connection connection = (Connection) param.get(EXEC_CONNECTION);
         Map<String, String> paramAndValue = (Map<String, String>) param.get(EXEC_PARAM_AND_VALUE);
-        String executeSql = getSql();
-        if(paramAndValue != null && executeSql.contains("#{")) {
-            executeSql = SPELParser.parseExpression(paramAndValue, executeSql).toString();
-        }
+        String executeSql = SPELParser.parseStringExpression(paramAndValue, getSql());
         try {
             beforeExecute(connection, executeSql, param);
             execSQL(connection, executeSql, param);

@@ -126,8 +126,8 @@ public class DataTransExecutorManager {
                     if(!StringUtils.hasLength(dataTrans.getSkipExpression())) {
                         return false;
                     }
-                    String skipExpression = SPELParser.parseExpression(param.get(IDataTransSqlExecutor.EXEC_PARAM_AND_VALUE)
-                            , dataTrans.getSkipExpression()).toString().trim();
+                    String skipExpression = SPELParser.parseStringExpression(param.get(IDataTransSqlExecutor.EXEC_PARAM_AND_VALUE)
+                            , dataTrans.getSkipExpression()).trim();
                     if(!StringUtils.hasLength(skipExpression)) {return false;}
                     Boolean skipResult = SPELParser.calcExpression(skipExpression, Boolean.class);
                     return skipResult == null? false : skipResult;
