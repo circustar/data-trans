@@ -10,14 +10,14 @@ import com.circustar.data_trans.service.IDataTransExecStepService;
 import java.util.Date;
 
 public class DataTransExecStepService extends ServiceImpl<DataTransExecStepMapper, DataTransExecStep> implements IDataTransExecStepService {
-    public void updateExecResult(Long dataTransExecId, String dataTransId, int error) {
+    public void updateExecResult(String dataTransExecId, String dataTransId, int error) {
         QueryWrapper qw = new QueryWrapper();
         qw.eq(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_EXEC_ID, dataTransExecId);
         qw.eq(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_ID, dataTransId);
         DataTransExecStep dataTransExecStep = this.getOne(qw);
         if(dataTransExecStep != null) {
             dataTransExecStep.setExecuteError(error);
-            dataTransExecStep.setExecuteTime(new Date());
+            dataTransExecStep.setExecuteEndTime(new Date());
             this.updateById(dataTransExecStep);
         } else {
             dataTransExecStep = DataTransExecStep.builder()
@@ -25,7 +25,7 @@ public class DataTransExecStepService extends ServiceImpl<DataTransExecStepMappe
                     .dataTransId(dataTransId)
                     .executed(1)
                     .executeError(error)
-                    .executeTime(new Date())
+                    .executeEndTime(new Date())
                     .build();
             this.save(dataTransExecStep);
         }

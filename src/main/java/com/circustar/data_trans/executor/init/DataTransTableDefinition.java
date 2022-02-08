@@ -115,16 +115,16 @@ public class DataTransTableDefinition {
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName(COLUMN_NAME_DATA_TRANS_GROUP_NAME)
                 .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
-                .indexName("IDX_" + TABLE_NAME_TRANS)
-                .indexOrder(1)
-                .build());
+                .indexNameOrders("IDX_" + TABLE_NAME_TRANS + ",1;")
+                .build()
+                .initTableIndexInfoList());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName("DEPEND_DATA_TRANS_ID")
                 .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
-                .indexName("IDX_" + TABLE_NAME_TRANS)
-                .indexOrder(2)
-                .build());
+                .indexNameOrders("IDX_" + TABLE_NAME_TRANS + ",2;")
+                .build()
+                .initTableIndexInfoList());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_TRANS)
                 .columnName("TABLE_NAME")
@@ -194,8 +194,9 @@ public class DataTransTableDefinition {
                 .dataTransId(DATA_TRANS_ID_SOURCE)
                 .columnName(COLUMN_NAME_DATA_TRANS_ID)
                 .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
-                .indexName("IDX_" + TABLE_NAME_TRANS_SOURCE)
-                .build());
+                .indexNameOrders("IDX_" + TABLE_NAME_TRANS_SOURCE)
+                .build()
+                .initTableIndexInfoList());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_SOURCE)
                 .columnName("SOURCE_TABLE")
@@ -235,8 +236,9 @@ public class DataTransTableDefinition {
                 .dataTransId(DATA_TRANS_ID_COLUMN)
                 .columnName(COLUMN_NAME_DATA_TRANS_ID)
                 .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
-                .indexName("IDX_" + TABLE_NAME_TRANS_COLUMN)
-                .build());
+                .indexNameOrders("IDX_" + TABLE_NAME_TRANS_COLUMN)
+                .build()
+                .initTableIndexInfoList());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_COLUMN)
                 .columnName("COLUMN_NAME")
@@ -264,13 +266,8 @@ public class DataTransTableDefinition {
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_COLUMN)
-                .columnName("INDEX_NAME")
-                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
-                .build());
-        result.add(DataTransColumn.builder()
-                .dataTransId(DATA_TRANS_ID_COLUMN)
-                .columnName("INDEX_ORDER")
-                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
+                .columnName("INDEX_NAME_ORDERS")
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "500"))
                 .build());
 
         return result;
@@ -281,14 +278,15 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC)
                 .columnName(COLUMN_NAME_DATA_TRANS_EXEC_ID)
-                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "20"))
                 .primaryKey(1).build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC)
                 .columnName(COLUMN_NAME_DATA_TRANS_GROUP_NAME)
                 .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
-                .indexName("IDX_" + TABLE_NAME_EXEC)
-                .build());
+                .indexNameOrders("IDX_" + TABLE_NAME_EXEC)
+                .build()
+                .initTableIndexInfoList());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC)
                 .columnName("EXECUTED")
@@ -317,20 +315,22 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_STEP)
                 .columnName(COLUMN_NAME_DATA_TRANS_EXEC_STEP_ID)
-                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "32"))
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "20"))
                 .primaryKey(1).build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_STEP)
                 .columnName(COLUMN_NAME_DATA_TRANS_EXEC_ID)
-                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
-                .indexName("UNI_IDX_" + TABLE_NAME_EXEC_STEP)
-                .build());
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "20"))
+                .indexNameOrders("UNI_IDX_" + TABLE_NAME_EXEC_STEP)
+                .build()
+                .initTableIndexInfoList());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_STEP)
                 .columnName(COLUMN_NAME_DATA_TRANS_ID)
-                .columnType(getDataType(dbName,COLUMN_TYPE_INT, "10"))
-                .indexName("UNI_IDX_" + TABLE_NAME_EXEC_STEP)
-                .build());
+                .columnType(getDataType(dbName,COLUMN_TYPE_VARCHAR, "100"))
+                .indexNameOrders("UNI_IDX_" + TABLE_NAME_EXEC_STEP)
+                .build()
+                .initTableIndexInfoList());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_STEP)
                 .columnName("EXECUTED")
@@ -343,7 +343,7 @@ public class DataTransTableDefinition {
                 .build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_STEP)
-                .columnName("EXECUTE_TIME")
+                .columnName("EXECUTE_END_TIME")
                 .columnType(getDataType(dbName,COLUMN_TYPE_DATETIME, ""))
                 .build());
         return result;
@@ -354,14 +354,15 @@ public class DataTransTableDefinition {
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_PARAM)
                 .columnName(COLUMN_NAME_DATA_TRANS_EXEC_PARAM_ID)
-                .columnType(getDataType(dbName, COLUMN_TYPE_INT, "10"))
+                .columnType(getDataType(dbName, COLUMN_TYPE_VARCHAR, "20"))
                 .primaryKey(1).build());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_PARAM)
                 .columnName(COLUMN_NAME_DATA_TRANS_EXEC_ID)
-                .columnType(getDataType(dbName, COLUMN_TYPE_INT, "10"))
-                .indexName("IDX_" + TABLE_NAME_EXEC_PARAM)
-                .build());
+                .columnType(getDataType(dbName, COLUMN_TYPE_VARCHAR, "20"))
+                .indexNameOrders("IDX_" + TABLE_NAME_EXEC_PARAM)
+                .build()
+                .initTableIndexInfoList());
         result.add(DataTransColumn.builder()
                 .dataTransId(DATA_TRANS_ID_EXEC_PARAM)
                 .columnName("PARAM_NAME")

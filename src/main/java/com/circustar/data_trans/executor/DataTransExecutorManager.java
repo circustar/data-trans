@@ -113,6 +113,7 @@ public class DataTransExecutorManager {
         qw2.eq(DataTransTableDefinition.COLUMN_NAME_DATA_TRANS_ID, dataTrans.getDataTransId());
         List<DataTransSource> dataTransSourceList = dataTransSourceService.list(qw2);
         List<DataTransColumn> dataTransColumnList = dataTransColumnService.list(qw2);
+        dataTransColumnList.forEach(x -> x.initTableIndexInfoList());
         DataTransExecutorBuilder dataTransExecutorBuilder = new DataTransExecutorBuilder(
                 dataTrans, dataTransSourceList, dataTransColumnList);
         IExecutor<Map<String, Object>> executor = dataTransExecutorBuilder.build();
@@ -133,12 +134,12 @@ public class DataTransExecutorManager {
                     return skipResult == null? false : skipResult;
                 });
         skipExecutor.addAfterExecuteConsumer(param -> {
-            Long execId = (Long) param.get(IDataTransSqlExecutor.EXEC_ID);
+            String execId = (String) param.get(IDataTransSqlExecutor.EXEC_ID);
             dataTransExecStepService.updateExecResult(execId, dataTrans.getDataTransId(), Constant.CONST_NO);
         });
 
         skipExecutor.setExecuteErrorConsumer((param, e) -> {
-            Long execId = (Long) param.get(IDataTransSqlExecutor.EXEC_ID);
+            String execId = (String) param.get(IDataTransSqlExecutor.EXEC_ID);
             dataTransExecStepService.updateExecResult(execId, dataTrans.getDataTransId(), Constant.CONST_YES);
         });
         return skipExecutor;
@@ -155,7 +156,7 @@ public class DataTransExecutorManager {
         }
     }
 
-    public Long addExecInfo(String execGroupName, Map<String, String> paramMap) {
+    public String addExecInfo(String execGroupName, Map<String, String> paramMap) {
         DataTransExec dataTransExec = DataTransExec.builder().dataTransGroupName(execGroupName).build();
         dataTransExecService.save(dataTransExec);
 
@@ -168,11 +169,11 @@ public class DataTransExecutorManager {
         return dataTransExec.getDataTransExecId();
     }
 
-    public void exec(Long execId) {
+    public void exec(String execId) {
         exec(execId, false);
     }
 
-    public void exec(Long execId, boolean refreshCache) {
+    public void exec(String execId, boolean refreshCache) {
         DataTransExec dataTransExec = dataTransExecService.getById(execId);
         DataTransGroup dataTransGroup = dataTransGroupService.getById(dataTransExec.getDataTransGroupName());
         if(refreshCache) {

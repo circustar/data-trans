@@ -1,5 +1,6 @@
 package com.circustar.data_trans.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +15,8 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class DataTransExec implements Serializable {
-    @TableId
-    private Long dataTransExecId;
+    @TableId(type = IdType.ASSIGN_ID)
+    private String dataTransExecId;
 
     private String dataTransGroupName;
 

@@ -64,8 +64,7 @@
 | COLUMN_VALUE  | 目标列值 | 文字 |  |
 | GROUP_FLAG  | 分组标志 | 数字 |  |
 | PRIMARY_KEY  | 是否是主键 | 数字 |  |
-| INDEX_NAME  | 索引名称 | 文字 |  |
-| INDEX_ORDER  | 所在索引的顺序 | 数字 |  |
+| INDEX_NAME_ORDERS  | 索引名以及字段顺序 | 文字 | 样例: idx1,1;idx2,2 |
 
 #### 4.2.执行
 ```java

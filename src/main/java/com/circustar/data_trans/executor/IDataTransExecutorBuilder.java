@@ -7,6 +7,7 @@ import com.circustar.data_trans.entity.DataTransSource;
 import com.circustar.common_utils.executor.*;
 import com.circustar.common_utils.sql_builder.*;
 import com.circustar.data_trans.executor.init.DataTransTableDefinition;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -252,22 +253,19 @@ public interface IDataTransExecutorBuilder {
 
     default  BaseListExecutor<Map<String, Object>> createAddIndexExecutor(DataTrans dataTrans
             , List<DataTransColumn> dataTransColumns) {
-        Map<String, List<DataTransColumn>> indexMap = dataTransColumns.stream()
-                .filter(x -> StringUtils.hasLength(x.getIndexName())).collect(
-                        Collectors.groupingBy(DataTransColumn::getIndexName)
-                );
-        if(indexMap.isEmpty()) {
+        dataTrans.initTableIndexInfo(dataTransColumns.stream().map(x -> x.getColumnIndexInfoList())
+                .filter(x -> x!= null)
+                .flatMap(List::stream).collect(Collectors.toList()));
+        if(CollectionUtils.isEmpty(dataTrans.getTableIndexInfoList())) {
             return null;
         }
 
-        List<BaseDataTransSqlExecutor> sqlExecutors = indexMap.entrySet().stream()
+        List<BaseDataTransSqlExecutor> sqlExecutors = dataTrans.getTableIndexInfoList().stream()
                 .map(x -> AddTableIndexSQLBuilder.builder()
                         .tableName(dataTrans.getTableName())
-                        .indexName(x.getKey())
-                        .isUnique(x.getKey().toLowerCase().startsWith(UNIQUE_INDEX_PREFIX))
-                        .columnInfoList(x.getValue().stream()
-                        .sorted(Comparator.comparingInt(a -> Optional.ofNullable(a.getIndexOrder()).orElse(0)))
-                        .map(y -> y.getColumnName()).collect(Collectors.toList())).build().getSql()
+                        .indexName(x.getIndexName())
+                        .isUnique(x.getIndexName().startsWith(UNIQUE_INDEX_PREFIX))
+                        .columnInfoList(x.getColumnNameList()).build().getSql()
         ).map(x -> new BaseDataTransSqlExecutor(x)).collect(Collectors.toList());
 
         return new BaseListExecutor(sqlExecutors);

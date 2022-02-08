@@ -87,7 +87,10 @@ public class DataTransExecutorBuilder implements IDataTransExecutorBuilder {
                             primaryKeyExecutors
                     ).setPopElementOnSuccess(true));
         }
-        listExecutor.addExecutor(createAddIndexExecutor(dataTrans, dataTransColumns));
+        final BaseListExecutor<Map<String, Object>> addIndexExecutor = createAddIndexExecutor(dataTrans, dataTransColumns);
+        if(addIndexExecutor != null) {
+            listExecutor.addExecutor(addIndexExecutor);
+        }
         return listExecutor;
     }
 }

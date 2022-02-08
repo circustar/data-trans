@@ -1,5 +1,6 @@
 package com.circustar.data_trans.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,10 +14,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class DataTransExecParam implements Serializable {
-    @TableId
-    private Long DataTransExecParamId;
+    @TableId(type = IdType.ASSIGN_ID)
+    private String DataTransExecParamId;
 
-    private Long DataTransExecId;
+    private String DataTransExecId;
 
     private String paramName;
 

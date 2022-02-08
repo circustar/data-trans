@@ -18,7 +18,7 @@ public class DataTransExecStep implements Serializable {
     @TableId(type = IdType.ASSIGN_ID)
     private String dataTransExecStepId;
 
-    private Long dataTransExecId;
+    private String dataTransExecId;
 
     private String dataTransId;
 
@@ -26,5 +26,5 @@ public class DataTransExecStep implements Serializable {
 
     private Integer executeError;
 
-    private Date executeTime;
+    private Date executeEndTime;
 }
