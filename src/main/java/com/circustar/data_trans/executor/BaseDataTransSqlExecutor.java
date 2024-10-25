@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.util.Map;
 
-@Slf4j
 public class BaseDataTransSqlExecutor extends AbstractExecutor<Map<String, Object>> implements IDataTransSqlExecutor {
     private String sql;
     public BaseDataTransSqlExecutor(String sql) {
@@ -24,7 +23,6 @@ public class BaseDataTransSqlExecutor extends AbstractExecutor<Map<String, Objec
     }
     @Override
     public void beforeExecute(Connection connection , String sql, Map<String, Object> param) throws Exception {
-        log.info("EXECUTE SQL:" + sql);
     }
     @Override
     public void execSQL(Connection connection , String sql, Map<String, Object> param) throws Exception {

@@ -17,7 +17,6 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@Slf4j
 public class DataTransExecutorManager {
     private DataSource dataSource;
 
@@ -206,7 +205,6 @@ public class DataTransExecutorManager {
         } catch (Exception ex) {
             dataTransExec.setExecuteError(Constant.CONST_YES);
             String message = Optional.ofNullable(ex.getMessage()).orElse("unknown exception");
-            log.error(message);
             dataTransExec.setMessage(message.length() > 1000 ? message.substring(0, 1000) : message);
             tryRemoveMap(dataTransGroup.getDataTransGroupName());
         }

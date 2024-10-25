@@ -11,7 +11,6 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
 public class BaseDataTransSelectSqlExecutor extends AbstractExecutor<Map<String, Object>> implements IDataTransSqlExecutor {
     private String sql;
     public BaseDataTransSelectSqlExecutor(String sql) {
@@ -28,7 +27,6 @@ public class BaseDataTransSelectSqlExecutor extends AbstractExecutor<Map<String,
     }
     @Override
     public void beforeExecute(Connection connection , String sql, Map<String, Object> param) throws Exception {
-        log.info("EXECUTE SQL:" + sql);
     }
     @Override
     public void execSQL(Connection connection , String sql, Map<String, Object> param) throws Exception {
